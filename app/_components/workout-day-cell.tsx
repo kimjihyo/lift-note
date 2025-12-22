@@ -17,15 +17,18 @@ export function WorkoutDayCell({
 }: WorkoutDayCellProps) {
   return (
     <div className="flex h-full w-full flex-col items-start justify-start gap-1">
-      <span
-        className={cn(
-          "text-sm font-medium w-full text-left",
-          isToday && "font-bold text-primary",
-          !isCurrentMonth && "text-muted-foreground"
-        )}
-      >
-        {day}
-      </span>
+      <div className="w-full flex justify-center">
+        <span
+          className={cn(
+            "text-sm font-medium",
+            isToday && "bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center",
+            !isToday && "text-center",
+            !isCurrentMonth && "text-muted-foreground"
+          )}
+        >
+          {day}
+        </span>
+      </div>
       {tags.length > 0 && (
         <div className="flex flex-col gap-0.5 w-full">
           {tags.map((tag) => {

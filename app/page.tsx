@@ -6,7 +6,7 @@ export default function Home() {
       <header className="shrink-0 px-4 py-3 border-b">
         <h1 className="text-xl font-bold tracking-tight">운동 기록</h1>
       </header>
-      <main className="flex-1 overflow-hidden p-2">
+      <main className="flex-1 overflow-hidden">
         <WorkoutCalendar />
       </main>
     </div>

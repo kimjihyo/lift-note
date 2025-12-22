@@ -2,7 +2,17 @@
 
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths, isSameMonth, isToday, startOfWeek, endOfWeek } from "date-fns";
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  addMonths,
+  isSameMonth,
+  isToday,
+  startOfWeek,
+  endOfWeek,
+} from "date-fns";
 import { ko } from "date-fns/locale";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { getWorkoutRecords, initializeDummyData } from "@/lib/storage";
@@ -31,7 +41,10 @@ export function WorkoutCalendar() {
       const monthEnd = endOfMonth(monthDate);
       const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 });
       const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
-      const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
+      const days = eachDayOfInterval({
+        start: calendarStart,
+        end: calendarEnd,
+      });
 
       const weeks: Date[][] = [];
       for (let j = 0; j < days.length; j += 7) {
@@ -60,6 +73,7 @@ export function WorkoutCalendar() {
     return record?.tags || [];
   };
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: monthsData.length,
     getScrollElement: () => parentRef.current,
@@ -69,14 +83,19 @@ export function WorkoutCalendar() {
       const WEEKDAY_HEADER_HEIGHT = 32;
       const WEEK_HEIGHT = 88;
       const BOTTOM_MARGIN = 16;
-      return HEADER_HEIGHT + WEEKDAY_HEADER_HEIGHT + (weeksCount * WEEK_HEIGHT) + BOTTOM_MARGIN;
+      return (
+        HEADER_HEIGHT +
+        WEEKDAY_HEADER_HEIGHT +
+        weeksCount * WEEK_HEIGHT +
+        BOTTOM_MARGIN
+      );
     },
     initialOffset: () => {
       // 현재 달(인덱스 24)로 스크롤
       let offset = 0;
       for (let i = 0; i < 24; i++) {
         const weeksCount = monthsData[i]?.weeks.length || 0;
-        offset += 48 + 32 + (weeksCount * 88) + 16;
+        offset += 48 + 32 + weeksCount * 88 + 16;
       }
       return offset;
     },
@@ -104,17 +123,16 @@ export function WorkoutCalendar() {
                 width: "100%",
                 transform: `translateY(${virtualItem.start}px)`,
               }}
-              className="px-2"
             >
               {/* 월 헤더 */}
-              <div className="py-3">
+              <div className="py-3 px-2">
                 <h2 className="text-lg font-semibold">
                   {format(monthDate, "yyyy년 M월", { locale: ko })}
                 </h2>
               </div>
 
               {/* 요일 헤더 */}
-              <div className="grid grid-cols-7 gap-1 mb-1">
+              <div className="grid grid-cols-7 mb-1">
                 {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
                   <div
                     key={day}
@@ -126,9 +144,9 @@ export function WorkoutCalendar() {
               </div>
 
               {/* 날짜 그리드 */}
-              <div className="space-y-1">
+              <div>
                 {weeks.map((week, weekIndex) => (
-                  <div key={weekIndex} className="grid grid-cols-7 gap-1">
+                  <div key={weekIndex} className="grid grid-cols-7">
                     {week.map((day) => {
                       const tags = getTagsForDate(day);
                       const isCurrentMonth = isSameMonth(day, monthDate);
@@ -138,9 +156,9 @@ export function WorkoutCalendar() {
                         <button
                           key={day.toISOString()}
                           onClick={() => handleDateClick(day)}
-                          className={`border rounded-md p-1 min-h-20 ${
+                          className={`p-1 min-h-20 ${
                             isCurrentMonth ? "bg-background" : "bg-muted/30"
-                          } ${isTodayDate ? "border-primary border-2" : "border-border"}`}
+                          }`}
                         >
                           <WorkoutDayCell
                             day={day.getDate()}
