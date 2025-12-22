@@ -18,9 +18,9 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
   const formattedDate = format(dateObj, "MMMM do");
 
   return (
-    <div className="h-screen w-full flex flex-col bg-background">
+    <div className="flex flex-col bg-background">
       {/* 헤더 */}
-      <header className="bg-background sticky top-0 shrink-0 px-4 py-3 border-b flex items-center gap-3">
+      <header className="bg-background sticky z-20 top-0 shrink-0 px-4 py-3 border-b flex items-center gap-3">
         <Link href="/">
           <Button variant="ghost" size="icon">
             <ChevronLeft className="h-5 w-5" />

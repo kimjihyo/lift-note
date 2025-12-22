@@ -46,7 +46,7 @@ export function WorkoutDayCell({
               <span
                 key={tag}
                 className={cn(
-                  "inline-flex items-center justify-center rounded-sm px-1.5 text-xs leading-tight font-medium border w-full",
+                  "inline-flex items-center justify-center rounded-sm px-1.5 text-xs leading-tight font-bold border w-full",
                   colors.bg,
                   colors.text,
                   colors.border

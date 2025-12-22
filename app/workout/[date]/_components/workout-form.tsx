@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { getWorkoutRecordByDate, saveWorkoutRecord } from "@/lib/storage";
-import type { WorkoutRecord, WorkoutTag, Exercise, WorkoutSet } from "@/lib/types";
+import type {
+  WorkoutRecord,
+  WorkoutTag,
+  Exercise,
+  WorkoutSet,
+} from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -41,7 +46,9 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // 각 운동별 새 세트 입력값 관리
-  const [newSetInputs, setNewSetInputs] = useState<Record<string, { weight: string; reps: string }>>({});
+  const [newSetInputs, setNewSetInputs] = useState<
+    Record<string, { weight: string; reps: string }>
+  >({});
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -106,9 +113,7 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
       const updated = {
         ...prev,
         exercises: prev.exercises.map((ex) =>
-          ex.id === exerciseId
-            ? { ...ex, sets: [...ex.sets, newSet] }
-            : ex
+          ex.id === exerciseId ? { ...ex, sets: [...ex.sets, newSet] } : ex
         ),
       };
       saveWorkoutRecord(updated);
@@ -117,7 +122,12 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
   };
 
   // 세트 수정
-  const updateSet = (exerciseId: string, setId: string, weight: number, reps: number) => {
+  const updateSet = (
+    exerciseId: string,
+    setId: string,
+    weight: number,
+    reps: number
+  ) => {
     setRecord((prev) => {
       const updated = {
         ...prev,
@@ -179,7 +189,7 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
 
       {/* 운동 목록 섹션 */}
       <section>
-        <div className="sticky top-15 pt-4 bg-background flex items-center justify-between mb-3">
+        <div className="sticky top-15 z-10 pt-4 bg-background flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-muted-foreground">
             Excercises
           </h2>
@@ -191,7 +201,7 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
               }}
             >
               <Button size="sm" variant="outline">
-                <Plus className="h-4 w-4 mr-1" />
+                <Plus className="h-4 w-4" />
                 Add Exercise
               </Button>
             </DrawerTrigger>
@@ -237,47 +247,68 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
               const reps = newSetInputs[inputKey]?.reps || "";
 
               return (
-                <div key={exercise.id} className="border rounded-lg p-3 space-y-3">
+                <div
+                  key={exercise.id}
+                  // className="border rounded-lg p-3 space-y-3"
+                >
                   {/* 운동 헤더 */}
-                  <div className="flex items-center justify-between pb-2 border-b">
-                    <h3 className="font-medium">{exercise.name}</h3>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-destructive"
-                      onClick={() => deleteExercise(exercise.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                  <div className="sticky top-27 bg-background pt-1 border-b">
+                    <div className="bg-background flex items-center justify-between px-3 pt-3 pb-2 border border-b-0 rounded-t-lg">
+                      <h3 className="font-medium">{exercise.name}</h3>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive"
+                        onClick={() => deleteExercise(exercise.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
 
                   {/* 세트 리스트 */}
-                  <div className="space-y-2">
+                  <div className="space-y-2 p-3 border border-t-0 border-b-0">
                     {exercise.sets.map((set, index) => (
                       <div key={set.id} className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground min-w-12">
                           Set {index + 1}
                         </span>
                         <Input
-                          type="number"
+                          type="text"
+                          pattern="\d*"
                           value={set.weight}
                           onChange={(e) =>
-                            updateSet(exercise.id, set.id, parseFloat(e.target.value) || 0, set.reps)
+                            updateSet(
+                              exercise.id,
+                              set.id,
+                              parseFloat(e.target.value) || 0,
+                              set.reps
+                            )
                           }
-                          className="h-8 w-20 text-sm"
+                          className="h-8 w-16 font-mono font-bold placeholder:font-normal placeholder:text-sm"
                           placeholder="kg"
                         />
-                        <span className="text-xs text-muted-foreground">kg ×</span>
+                        <span className="text-sm text-muted-foreground">
+                          kg ×
+                        </span>
                         <Input
-                          type="number"
+                          type="text"
+                          pattern="\d*"
                           value={set.reps}
                           onChange={(e) =>
-                            updateSet(exercise.id, set.id, set.weight, parseInt(e.target.value, 10) || 0)
+                            updateSet(
+                              exercise.id,
+                              set.id,
+                              set.weight,
+                              parseInt(e.target.value, 10) || 0
+                            )
                           }
-                          className="h-8 w-16 text-sm"
+                          className="h-8 w-16 font-mono font-bold placeholder:font-normal placeholder:text-sm"
                           placeholder="reps"
                         />
-                        <span className="text-xs text-muted-foreground">reps</span>
+                        <span className="text-sm text-muted-foreground">
+                          reps
+                        </span>
                         <Button
                           variant="ghost"
                           size="icon"
@@ -291,33 +322,41 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
                   </div>
 
                   {/* 세트 추가 입력 */}
-                  <div className="flex items-center gap-2 pt-2 border-t">
+                  <div className="flex items-center gap-2 px-3 pb-3 border border-t-0 rounded-b-lg">
                     <Input
-                      type="number"
+                      type="text"
+                      pattern="\d*"
                       value={weight}
                       onChange={(e) =>
                         setNewSetInputs((prev) => ({
                           ...prev,
-                          [inputKey]: { weight: e.target.value, reps: prev[inputKey]?.reps || "" },
+                          [inputKey]: {
+                            weight: e.target.value,
+                            reps: prev[inputKey]?.reps || "",
+                          },
                         }))
                       }
-                      className="h-8 w-20 text-sm"
+                      className="h-8 w-16 font-mono font-bold placeholder:font-normal placeholder:text-sm"
                       placeholder="kg"
                     />
-                    <span className="text-xs text-muted-foreground">kg ×</span>
+                    <span className="text-sm text-muted-foreground">kg ×</span>
                     <Input
-                      type="number"
+                      type="text"
+                      pattern="\d*"
                       value={reps}
                       onChange={(e) =>
                         setNewSetInputs((prev) => ({
                           ...prev,
-                          [inputKey]: { weight: prev[inputKey]?.weight || "", reps: e.target.value },
+                          [inputKey]: {
+                            weight: prev[inputKey]?.weight || "",
+                            reps: e.target.value,
+                          },
                         }))
                       }
-                      className="h-8 w-16 text-sm"
+                      className="h-8 w-16 font-mono font-bold placeholder:font-normal placeholder:text-sm"
                       placeholder="reps"
                     />
-                    <span className="text-xs text-muted-foreground">reps</span>
+                    <span className="text-sm text-muted-foreground">reps</span>
                     <Button
                       variant="outline"
                       size="sm"
@@ -334,7 +373,7 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
                         }
                       }}
                     >
-                      <Plus className="h-3 w-3 mr-1" />
+                      <Plus className="h-3 w-3" />
                       Add Set
                     </Button>
                   </div>
