@@ -118,9 +118,28 @@
     @apply border-border outline-ring/50;
     scrollbar-width: none;
   }
+
+  html {
+    /* iOS 노치 영역 배경색 - 다크모드 (기본) */
+    background-color: #252525;
+  }
+
+  /* 라이트모드일 때 배경색 */
+  @media (prefers-color-scheme: light) {
+    html {
+      background-color: #ffffff;
+    }
+  }
+
   body {
     @apply bg-background text-foreground;
+    /* iOS PWA safe area 지원 */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
+
   body::-webkit-scrollbar {
     display: none;
   }

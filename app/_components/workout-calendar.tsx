@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 
 // 상수
 const WEEK_HEIGHT = 96; // 각 주의 높이 (h-24 = 96px)
-const MONTH_LABEL_HEIGHT = 28; // 월 레이블 높이 (py-1.5 + text)
+const MONTH_LABEL_HEIGHT = 36; // 월 레이블 높이 (py-1.5 + text)
 const TODAY_MONTH_INDEX = 24; // 오늘 기준 달의 인덱스 (앞뒤 24개월)
 const MONTHS_BEFORE = 24; // 과거 달 개수
 const MONTHS_AFTER = 24; // 미래 달 개수
