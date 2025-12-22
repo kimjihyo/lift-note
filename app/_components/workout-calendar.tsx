@@ -81,14 +81,17 @@ export function WorkoutCalendar() {
     estimateSize: (index) => {
       const weeksCount = monthsData[index]?.weeks.length || 0;
       const WEEK_HEIGHT = 80;
-      return weeksCount * WEEK_HEIGHT;
+      const MONTH_LABEL_HEIGHT = 28; // py-1.5 (6px * 2) + text height (16px)
+      return MONTH_LABEL_HEIGHT + weeksCount * WEEK_HEIGHT;
     },
     initialOffset: () => {
       // 현재 달(인덱스 24)로 스크롤
       let offset = 0;
+      const WEEK_HEIGHT = 80;
+      const MONTH_LABEL_HEIGHT = 28;
       for (let i = 0; i < 24; i++) {
         const weeksCount = monthsData[i]?.weeks.length || 0;
-        offset += weeksCount * 80;
+        offset += MONTH_LABEL_HEIGHT + weeksCount * WEEK_HEIGHT;
       }
       return offset;
     },
@@ -193,6 +196,13 @@ export function WorkoutCalendar() {
                   transform: `translateY(${virtualItem.start}px)`,
                 }}
               >
+                {/* 달 레이블 */}
+                <div className="px-2 py-1.5">
+                  <h3 className="text-xs font-semibold text-muted-foreground">
+                    {format(monthDate, "M월", { locale: ko })}
+                  </h3>
+                </div>
+
                 {/* 날짜 그리드 */}
                 <div>
                   {weeks.map((week, weekIndex) => (
