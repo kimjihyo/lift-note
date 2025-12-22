@@ -1,22 +1,11 @@
-import { format } from "date-fns";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WorkoutForm } from "./_components/workout-form";
+import { Suspense } from "react";
+import { WorkoutHeader } from "./_components/workout-header";
 
-interface WorkoutPageProps {
-  params: Promise<{
-    date: string;
-  }>;
-}
-
-export default async function WorkoutPage({ params }: WorkoutPageProps) {
-  const { date } = await params;
-
-  // date 형식 검증
-  const dateObj = new Date(date);
-  const formattedDate = format(dateObj, "MMMM do");
-
+export default async function WorkoutPage() {
   return (
     <div className="flex flex-col bg-background">
       {/* 헤더 */}
@@ -27,13 +16,17 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
           </Button>
         </Link>
         <div>
-          <h1 className="text-lg font-semibold">{formattedDate}</h1>
+          <Suspense>
+            <WorkoutHeader />
+          </Suspense>
         </div>
       </header>
 
       {/* 메인 콘텐츠 */}
       <main className="flex-1">
-        <WorkoutForm date={date} />
+        <Suspense>
+          <WorkoutForm />
+        </Suspense>
       </main>
     </div>
   );

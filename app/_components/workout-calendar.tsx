@@ -66,7 +66,7 @@ export function WorkoutCalendar() {
 
   const handleDateClick = (date: Date) => {
     const dateStr = format(date, "yyyy-MM-dd");
-    router.push(`/workout/${dateStr}`);
+    router.push(`/workout?date=${dateStr}`);
   };
 
   const scrollToToday = () => {

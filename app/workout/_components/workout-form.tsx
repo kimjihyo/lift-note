@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { EXERCISE_LIST } from "@/lib/constants/exercises";
+import { useSearchParams } from "next/navigation";
 
 const texts = {
   chest: "Chest",
@@ -32,11 +33,9 @@ const texts = {
   back: "Back",
 };
 
-interface WorkoutFormProps {
-  date: string;
-}
-
-export function WorkoutForm({ date }: WorkoutFormProps) {
+export function WorkoutForm() {
+  const params = useSearchParams();
+  const date = params.get("date") ?? "";
   const [isLoading, setIsLoading] = useState(true);
   const [record, setRecord] = useState<WorkoutRecord>({
     date,
