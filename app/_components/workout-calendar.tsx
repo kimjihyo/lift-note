@@ -92,17 +92,62 @@ export function WorkoutCalendar() {
       }
       return offset;
     },
-    onChange: (instance) => {
-      const items = instance.getVirtualItems();
-      if (items.length > 0) {
-        const firstVisibleItem = items[0];
-        const monthDate = monthsData[firstVisibleItem.index]?.monthDate;
-        if (monthDate) {
-          setCurrentVisibleMonth(monthDate);
+  });
+
+  // 스크롤 이벤트로 현재 보이는 월 추적
+  useEffect(() => {
+    const scrollElement = parentRef.current;
+    if (!scrollElement) return;
+
+    const handleScroll = () => {
+      const items = virtualizer.getVirtualItems();
+      if (items.length === 0) return;
+
+      // 화면 상단에 가장 가까운 월 찾기
+      const scrollTop = scrollElement.scrollTop;
+      const containerHeight = scrollElement.clientHeight;
+      const viewportTop = scrollTop;
+      const viewportBottom = scrollTop + containerHeight;
+      const viewportCenter = scrollTop + containerHeight / 3; // 상단 1/3 지점 사용
+
+      // 가장 많이 보이는 월 찾기
+      let maxVisibleArea = 0;
+      let bestIndex = items[0].index;
+
+      for (const item of items) {
+        const itemTop = item.start;
+        const itemBottom = item.end;
+
+        // 뷰포트와 아이템의 교차 영역 계산
+        const visibleTop = Math.max(viewportTop, itemTop);
+        const visibleBottom = Math.min(viewportBottom, itemBottom);
+        const visibleArea = Math.max(0, visibleBottom - visibleTop);
+
+        // 교차 영역이 가장 큰 아이템이 현재 보이는 월
+        if (visibleArea > maxVisibleArea) {
+          maxVisibleArea = visibleArea;
+          bestIndex = item.index;
+        }
+
+        // 뷰포트 중앙(상단 1/3)이 이 아이템 안에 있으면 이것을 선택
+        if (itemTop <= viewportCenter && itemBottom >= viewportCenter) {
+          bestIndex = item.index;
+          break;
         }
       }
-    },
-  });
+
+      const monthDate = monthsData[bestIndex]?.monthDate;
+      if (monthDate && monthDate.getTime() !== currentVisibleMonth.getTime()) {
+        setCurrentVisibleMonth(monthDate);
+      }
+    };
+
+    scrollElement.addEventListener('scroll', handleScroll);
+    // 초기 월 설정
+    handleScroll();
+
+    return () => scrollElement.removeEventListener('scroll', handleScroll);
+  }, [virtualizer, monthsData, currentVisibleMonth]);
 
   return (
     <div className="h-full flex flex-col">
