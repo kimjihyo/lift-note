@@ -18,6 +18,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { getWorkoutRecords, initializeDummyData } from "@/lib/storage";
 import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
 import { WorkoutDayCell } from "./workout-day-cell";
+import { Button } from "@/components/ui/button";
 
 // 월 데이터 타입
 type MonthData = {
@@ -66,6 +67,25 @@ export function WorkoutCalendar() {
   const handleDateClick = (date: Date) => {
     const dateStr = format(date, "yyyy-MM-dd");
     router.push(`/workout/${dateStr}`);
+  };
+
+  const scrollToToday = () => {
+    const scrollElement = parentRef.current;
+    if (!scrollElement) return;
+
+    // 현재 달(인덱스 24)로 스크롤
+    let offset = 0;
+    const WEEK_HEIGHT = 80;
+    const MONTH_LABEL_HEIGHT = 28;
+    for (let i = 0; i < 24; i++) {
+      const weeksCount = monthsData[i]?.weeks.length || 0;
+      offset += MONTH_LABEL_HEIGHT + weeksCount * WEEK_HEIGHT;
+    }
+
+    scrollElement.scrollTo({
+      top: offset,
+      behavior: "smooth",
+    });
   };
 
   const getTagsForDate = (day: Date): WorkoutTag[] => {
@@ -153,7 +173,7 @@ export function WorkoutCalendar() {
   }, [virtualizer, monthsData, currentVisibleMonth]);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col relative">
       {/* 고정 헤더 */}
       <div className="shrink-0 border-b bg-background z-20">
         <div className="py-3 px-2">
@@ -237,6 +257,15 @@ export function WorkoutCalendar() {
           })}
         </div>
       </div>
+
+      {/* Today 플로팅 버튼 */}
+      <Button
+        onClick={scrollToToday}
+        className="fixed bottom-4 left-4 rounded-full shadow-lg z-30"
+        size="default"
+      >
+        Today
+      </Button>
     </div>
   );
 }
