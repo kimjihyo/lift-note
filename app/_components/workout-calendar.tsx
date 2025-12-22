@@ -226,7 +226,7 @@ export function WorkoutCalendar() {
                 {/* 날짜 그리드 */}
                 <div>
                   {weeks.map((week, weekIndex) => (
-                    <div key={weekIndex} className="grid grid-cols-7">
+                    <div key={weekIndex} className="grid grid-cols-7 border-t">
                       {week.map((day) => {
                         const tags = getTagsForDate(day);
                         const isCurrentMonth = isSameMonth(day, monthDate);
