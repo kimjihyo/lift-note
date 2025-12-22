@@ -1,4 +1,4 @@
-export type WorkoutTag = "가슴" | "등" | "어깨" | "하체" | "팔";
+export type WorkoutTag = "chest" | "back" | "shoulders" | "legs" | "arms";
 
 export type WorkoutSet = {
   id: string;

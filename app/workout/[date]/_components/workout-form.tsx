@@ -2,15 +2,25 @@
 
 import { useEffect, useState } from "react";
 import { getWorkoutRecordByDate, saveWorkoutRecord } from "@/lib/storage";
-import type { WorkoutRecord, WorkoutTag, Exercise } from "@/lib/types";
+import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
+const texts = {
+  chest: "Chest",
+  shoulders: "Shoulders",
+  legs: "Legs",
+  arms: "Arms",
+  back: "Back",
+};
 
 interface WorkoutFormProps {
   date: string;
 }
 
 export function WorkoutForm({ date }: WorkoutFormProps) {
+  const [isLoading, setIsLoading] = useState(true);
   const [record, setRecord] = useState<WorkoutRecord>({
     date,
     tags: [],
@@ -19,87 +29,86 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
 
   // 초기 데이터 로드
   useEffect(() => {
-    const existingRecord = getWorkoutRecordByDate(date);
-    if (existingRecord) {
-      setRecord(existingRecord);
-    }
+    getWorkoutRecordByDate(date).then((existingRecord) => {
+      setIsLoading(false);
+      if (existingRecord) {
+        setRecord(existingRecord);
+      }
+    });
   }, [date]);
 
-  // 데이터 저장
-  const handleSave = () => {
-    saveWorkoutRecord(record);
-  };
-
   // 태그 토글
-  const toggleTag = (tag: WorkoutTag) => {
+  const setTags = (tags: WorkoutTag[]) => {
     setRecord((prev) => {
-      const newTags = prev.tags.includes(tag)
-        ? prev.tags.filter((t) => t !== tag)
-        : [...prev.tags, tag];
-      const updated = { ...prev, tags: newTags };
+      const updated = { ...prev, tags };
       saveWorkoutRecord(updated);
       return updated;
     });
   };
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4">
       {/* 태그 선택 섹션 */}
-      <section>
+      <section className="mb-2">
         <h2 className="text-sm font-semibold text-muted-foreground mb-3">
-          운동 부위
+          Muscle Group
         </h2>
-        <div className="flex flex-wrap gap-2">
-          {(["가슴", "등", "어깨", "하체", "팔"] as WorkoutTag[]).map(
+        <ToggleGroup
+          type="multiple"
+          value={record.tags}
+          spacing={2}
+          onValueChange={setTags}
+          className="flex-wrap"
+        >
+          {(["chest", "back", "shoulders", "legs", "arms"] as WorkoutTag[]).map(
             (tag) => (
-              <Button
-                key={tag}
-                variant={record.tags.includes(tag) ? "default" : "outline"}
-                size="sm"
-                onClick={() => toggleTag(tag)}
-              >
-                {tag}
-              </Button>
+              <ToggleGroupItem key={tag} value={tag}>
+                {texts[tag]}
+              </ToggleGroupItem>
             )
           )}
-        </div>
+        </ToggleGroup>
       </section>
 
       {/* 운동 목록 섹션 */}
       <section>
-        <div className="flex items-center justify-between mb-3">
+        <div className="sticky top-15 pt-4 bg-background flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-muted-foreground">
-            운동 목록
+            Excercises
           </h2>
           <Button size="sm" variant="outline">
             <Plus className="h-4 w-4 mr-1" />
-            운동 추가
+            Add Exercise
           </Button>
         </div>
 
-        {record.exercises.length === 0 ? (
+        {!isLoading && record.exercises.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            <p className="text-sm">운동을 추가해주세요</p>
+            <p className="text-sm">No workout recorded yet. Add one.</p>
           </div>
         ) : (
           <div className="space-y-3">
             {record.exercises.map((exercise) => (
-              <div
-                key={exercise.id}
-                className="border rounded-lg p-4 space-y-2"
-              >
-                <h3 className="font-medium">{exercise.name}</h3>
+              <div key={exercise.id}>
+                <h3 className="font-medium pb-1 mb-2 border-b">
+                  {exercise.name}
+                </h3>
                 <div className="space-y-1">
                   {exercise.sets.map((set, index) => (
                     <div
                       key={set.id}
                       className="flex items-center gap-2 text-sm"
                     >
-                      <span className="text-muted-foreground w-8">
-                        {index + 1}세트
+                      <span className="text-muted-foreground min-w-12">
+                        Set {index + 1}
                       </span>
                       <span>
-                        {set.weight}kg × {set.reps}회
+                        <span className="font-mono font-bold">
+                          {set.weight}
+                        </span>
+                        kg ×{" "}
+                        <span className="font-mono font-bold">{set.reps}</span>
+                        reps
                       </span>
                     </div>
                   ))}

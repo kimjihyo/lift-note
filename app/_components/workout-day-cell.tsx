@@ -9,6 +9,14 @@ interface WorkoutDayCellProps {
   isCurrentMonth?: boolean;
 }
 
+const texts = {
+  chest: "CH",
+  shoulders: "SHD",
+  legs: "LG",
+  arms: "AR",
+  back: "BK",
+};
+
 export function WorkoutDayCell({
   day,
   tags,
@@ -16,13 +24,13 @@ export function WorkoutDayCell({
   isCurrentMonth,
 }: WorkoutDayCellProps) {
   return (
-    <div className="flex h-full w-full flex-col items-start justify-start gap-1">
+    <div className="flex h-full w-full flex-col items-start justify-start gap-1 overflow-y-hidden">
       <div className="w-full flex justify-center">
         <span
           className={cn(
-            "text-sm font-medium",
+            "font-medium leading-8",
             isToday &&
-              "bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center",
+              "bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center",
             !isToday && "text-center",
             !isCurrentMonth && "opacity-30"
           )}
@@ -44,7 +52,7 @@ export function WorkoutDayCell({
                   colors.border
                 )}
               >
-                {tag}
+                {texts[tag]}
               </span>
             );
           })}

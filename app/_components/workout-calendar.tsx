@@ -13,7 +13,6 @@ import {
   startOfWeek,
   endOfWeek,
 } from "date-fns";
-import { ko } from "date-fns/locale";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { getWorkoutRecords, initializeDummyData } from "@/lib/storage";
 import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
@@ -29,7 +28,9 @@ type MonthData = {
 export function WorkoutCalendar() {
   const router = useRouter();
   const [workoutRecords, setWorkoutRecords] = useState<WorkoutRecord[]>([]);
-  const [currentVisibleMonth, setCurrentVisibleMonth] = useState<Date>(new Date());
+  const [currentVisibleMonth, setCurrentVisibleMonth] = useState<Date>(
+    new Date()
+  );
   const parentRef = useRef<HTMLDivElement>(null);
 
   // 현재 달 기준으로 앞뒤 24개월 생성 (총 49개월)
@@ -100,14 +101,14 @@ export function WorkoutCalendar() {
     getScrollElement: () => parentRef.current,
     estimateSize: (index) => {
       const weeksCount = monthsData[index]?.weeks.length || 0;
-      const WEEK_HEIGHT = 80;
+      const WEEK_HEIGHT = 96;
       const MONTH_LABEL_HEIGHT = 28; // py-1.5 (6px * 2) + text height (16px)
       return MONTH_LABEL_HEIGHT + weeksCount * WEEK_HEIGHT;
     },
     initialOffset: () => {
       // 현재 달(인덱스 24)로 스크롤
       let offset = 0;
-      const WEEK_HEIGHT = 80;
+      const WEEK_HEIGHT = 96;
       const MONTH_LABEL_HEIGHT = 28;
       for (let i = 0; i < 24; i++) {
         const weeksCount = monthsData[i]?.weeks.length || 0;
@@ -165,26 +166,26 @@ export function WorkoutCalendar() {
       }
     };
 
-    scrollElement.addEventListener('scroll', handleScroll);
+    scrollElement.addEventListener("scroll", handleScroll);
     // 초기 월 설정
     handleScroll();
 
-    return () => scrollElement.removeEventListener('scroll', handleScroll);
+    return () => scrollElement.removeEventListener("scroll", handleScroll);
   }, [virtualizer, monthsData, currentVisibleMonth]);
 
   return (
     <div className="h-full flex flex-col relative">
       {/* 고정 헤더 */}
       <div className="shrink-0 border-b bg-background z-20">
-        <div className="py-3 px-2">
-          <h2 className="text-lg font-semibold">
-            {format(currentVisibleMonth, "yyyy년 M월", { locale: ko })}
+        <div className="py-3 px-4">
+          <h2 className="text-2xl font-bold">
+            {format(currentVisibleMonth, "MMMM")}
           </h2>
         </div>
         <div className="grid grid-cols-7 border-t">
-          {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
+          {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
             <div
-              key={day}
+              key={index}
               className="text-center text-xs text-muted-foreground py-1"
             >
               {day}
@@ -217,9 +218,9 @@ export function WorkoutCalendar() {
                 }}
               >
                 {/* 달 레이블 */}
-                <div className="px-2 py-1.5">
-                  <h3 className="text-xs font-semibold text-muted-foreground">
-                    {format(monthDate, "M월", { locale: ko })}
+                <div className="px-4 py-1.5">
+                  <h3 className="font-semibold text-muted-foreground">
+                    {format(monthDate, "MMM")}
                   </h3>
                 </div>
 
@@ -232,11 +233,17 @@ export function WorkoutCalendar() {
                         const isCurrentMonth = isSameMonth(day, monthDate);
                         const isTodayDate = isToday(day);
 
+                        if (!isCurrentMonth) {
+                          return (
+                            <div key={day.getDate()} className="p-1 h-24" />
+                          );
+                        }
+
                         return (
                           <button
                             key={day.toISOString()}
                             onClick={() => handleDateClick(day)}
-                            className="p-1 min-h-20 bg-background"
+                            className="p-1 h-24 bg-background"
                           >
                             <WorkoutDayCell
                               day={day.getDate()}

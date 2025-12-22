@@ -15,9 +15,13 @@ export function getWorkoutRecords(): WorkoutRecord[] {
   }
 }
 
-export function getWorkoutRecordByDate(date: string): WorkoutRecord | null {
+export function getWorkoutRecordByDate(
+  date: string
+): Promise<WorkoutRecord | null> {
   const records = getWorkoutRecords();
-  return records.find((record) => record.date === date) || null;
+  return Promise.resolve(
+    records.find((record) => record.date === date) || null
+  );
 }
 
 export function saveWorkoutRecord(record: WorkoutRecord): void {
@@ -52,11 +56,52 @@ export function initializeDummyData(): void {
   const dummyRecords: WorkoutRecord[] = [
     {
       date: `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-03`,
-      tags: ["가슴", "어깨"],
+      tags: ["chest", "shoulders"],
       exercises: [
         {
           id: "1",
-          name: "벤치프레스",
+          name: "Bench Press",
+          sets: [
+            { id: "1-1", weight: 60, reps: 10 },
+            { id: "1-2", weight: 60, reps: 8 },
+          ],
+        },
+        {
+          id: "2",
+          name: "Incline Bench Press",
+          sets: [
+            { id: "1-1", weight: 60, reps: 10 },
+            { id: "1-2", weight: 60, reps: 8 },
+            { id: "1-3", weight: 60, reps: 8 },
+            { id: "1-4", weight: 60, reps: 8 },
+            { id: "1-5", weight: 60, reps: 8 },
+          ],
+        },
+        {
+          id: "3",
+          name: "Squat",
+          sets: [
+            { id: "1-1", weight: 60, reps: 10 },
+            { id: "1-2", weight: 60, reps: 8 },
+          ],
+        },
+        {
+          id: "4",
+          name: "Squat",
+          sets: [
+            { id: "1-1", weight: 60, reps: 10 },
+            { id: "1-2", weight: 60, reps: 8 },
+            { id: "1-3", weight: 60, reps: 10 },
+            { id: "1-4", weight: 60, reps: 8 },
+            { id: "1-5", weight: 60, reps: 10 },
+            { id: "1-6", weight: 60, reps: 8 },
+            { id: "1-7", weight: 60, reps: 10 },
+            { id: "1-8", weight: 60, reps: 8 },
+          ],
+        },
+        {
+          id: "5",
+          name: "Squat",
           sets: [
             { id: "1-1", weight: 60, reps: 10 },
             { id: "1-2", weight: 60, reps: 8 },
@@ -66,56 +111,12 @@ export function initializeDummyData(): void {
     },
     {
       date: `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-05`,
-      tags: ["하체"],
+      tags: ["legs"],
       exercises: [
         {
           id: "2",
           name: "스쿼트",
           sets: [{ id: "2-1", weight: 100, reps: 5 }],
-        },
-      ],
-    },
-    {
-      date: `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-08`,
-      tags: ["등"],
-      exercises: [
-        {
-          id: "3",
-          name: "데드리프트",
-          sets: [{ id: "3-1", weight: 120, reps: 5 }],
-        },
-      ],
-    },
-    {
-      date: `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-12`,
-      tags: ["가슴", "팔"],
-      exercises: [
-        {
-          id: "4",
-          name: "덤벨프레스",
-          sets: [{ id: "4-1", weight: 30, reps: 12 }],
-        },
-      ],
-    },
-    {
-      date: `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-15`,
-      tags: ["어깨", "팔"],
-      exercises: [
-        {
-          id: "5",
-          name: "숄더프레스",
-          sets: [{ id: "5-1", weight: 25, reps: 10 }],
-        },
-      ],
-    },
-    {
-      date: `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-18`,
-      tags: ["하체", "가슴"],
-      exercises: [
-        {
-          id: "6",
-          name: "레그프레스",
-          sets: [{ id: "6-1", weight: 150, reps: 12 }],
         },
       ],
     },

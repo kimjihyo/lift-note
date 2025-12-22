@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import { ko } from "date-fns/locale";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,12 +15,12 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
 
   // date 형식 검증
   const dateObj = new Date(date);
-  const formattedDate = format(dateObj, "yyyy년 M월 d일 (E)", { locale: ko });
+  const formattedDate = format(dateObj, "MMMM do");
 
   return (
     <div className="h-screen flex flex-col bg-background">
       {/* 헤더 */}
-      <header className="shrink-0 px-4 py-3 border-b flex items-center gap-3">
+      <header className="bg-background sticky top-0 shrink-0 px-4 py-3 border-b flex items-center gap-3">
         <Link href="/">
           <Button variant="ghost" size="icon">
             <ChevronLeft className="h-5 w-5" />
@@ -33,7 +32,7 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
       </header>
 
       {/* 메인 콘텐츠 */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1">
         <WorkoutForm date={date} />
       </main>
     </div>
