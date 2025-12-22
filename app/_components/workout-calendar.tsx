@@ -28,6 +28,7 @@ type MonthData = {
 export function WorkoutCalendar() {
   const router = useRouter();
   const [workoutRecords, setWorkoutRecords] = useState<WorkoutRecord[]>([]);
+  const [currentVisibleMonth, setCurrentVisibleMonth] = useState<Date>(new Date());
   const parentRef = useRef<HTMLDivElement>(null);
 
   // 현재 달 기준으로 앞뒤 24개월 생성 (총 49개월)
@@ -79,102 +80,107 @@ export function WorkoutCalendar() {
     getScrollElement: () => parentRef.current,
     estimateSize: (index) => {
       const weeksCount = monthsData[index]?.weeks.length || 0;
-      const HEADER_HEIGHT = 48;
-      const WEEKDAY_HEADER_HEIGHT = 32;
-      const WEEK_HEIGHT = 88;
-      const BOTTOM_MARGIN = 16;
-      return (
-        HEADER_HEIGHT +
-        WEEKDAY_HEADER_HEIGHT +
-        weeksCount * WEEK_HEIGHT +
-        BOTTOM_MARGIN
-      );
+      const WEEK_HEIGHT = 80;
+      return weeksCount * WEEK_HEIGHT;
     },
     initialOffset: () => {
       // 현재 달(인덱스 24)로 스크롤
       let offset = 0;
       for (let i = 0; i < 24; i++) {
         const weeksCount = monthsData[i]?.weeks.length || 0;
-        offset += 48 + 32 + weeksCount * 88 + 16;
+        offset += weeksCount * 80;
       }
       return offset;
+    },
+    onChange: (instance) => {
+      const items = instance.getVirtualItems();
+      if (items.length > 0) {
+        const firstVisibleItem = items[0];
+        const monthDate = monthsData[firstVisibleItem.index]?.monthDate;
+        if (monthDate) {
+          setCurrentVisibleMonth(monthDate);
+        }
+      }
     },
   });
 
   return (
-    <div ref={parentRef} className="h-full overflow-y-auto">
-      <div
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-          width: "100%",
-          position: "relative",
-        }}
-      >
-        {virtualizer.getVirtualItems().map((virtualItem) => {
-          const { monthDate, weeks } = monthsData[virtualItem.index];
-
-          return (
+    <div className="h-full flex flex-col">
+      {/* 고정 헤더 */}
+      <div className="shrink-0 border-b bg-background z-20">
+        <div className="py-3 px-2">
+          <h2 className="text-lg font-semibold">
+            {format(currentVisibleMonth, "yyyy년 M월", { locale: ko })}
+          </h2>
+        </div>
+        <div className="grid grid-cols-7 border-t">
+          {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
             <div
-              key={virtualItem.key}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                transform: `translateY(${virtualItem.start}px)`,
-              }}
+              key={day}
+              className="text-center text-xs text-muted-foreground py-1"
             >
-              {/* 월 헤더 */}
-              <div className="py-3 px-2">
-                <h2 className="text-lg font-semibold">
-                  {format(monthDate, "yyyy년 M월", { locale: ko })}
-                </h2>
-              </div>
-
-              {/* 요일 헤더 */}
-              <div className="grid grid-cols-7 mb-1">
-                {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
-                  <div
-                    key={day}
-                    className="text-center text-xs text-muted-foreground py-1"
-                  >
-                    {day}
-                  </div>
-                ))}
-              </div>
-
-              {/* 날짜 그리드 */}
-              <div>
-                {weeks.map((week, weekIndex) => (
-                  <div key={weekIndex} className="grid grid-cols-7">
-                    {week.map((day) => {
-                      const tags = getTagsForDate(day);
-                      const isCurrentMonth = isSameMonth(day, monthDate);
-                      const isTodayDate = isToday(day);
-
-                      return (
-                        <button
-                          key={day.toISOString()}
-                          onClick={() => handleDateClick(day)}
-                          className={`p-1 min-h-20 ${
-                            isCurrentMonth ? "bg-background" : "bg-muted/30"
-                          }`}
-                        >
-                          <WorkoutDayCell
-                            day={day.getDate()}
-                            tags={tags}
-                            isToday={isTodayDate}
-                            isCurrentMonth={isCurrentMonth}
-                          />
-                        </button>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
+              {day}
             </div>
-          );
-        })}
+          ))}
+        </div>
+      </div>
+
+      {/* 가상화된 달력 콘텐츠 */}
+      <div ref={parentRef} className="flex-1 overflow-y-auto">
+        <div
+          style={{
+            height: `${virtualizer.getTotalSize()}px`,
+            width: "100%",
+            position: "relative",
+          }}
+        >
+          {virtualizer.getVirtualItems().map((virtualItem) => {
+            const { monthDate, weeks } = monthsData[virtualItem.index];
+
+            return (
+              <div
+                key={virtualItem.key}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              >
+                {/* 날짜 그리드 */}
+                <div>
+                  {weeks.map((week, weekIndex) => (
+                    <div key={weekIndex} className="grid grid-cols-7">
+                      {week.map((day) => {
+                        const tags = getTagsForDate(day);
+                        const isCurrentMonth = isSameMonth(day, monthDate);
+                        const isTodayDate = isToday(day);
+
+                        return (
+                          <button
+                            key={day.toISOString()}
+                            onClick={() => handleDateClick(day)}
+                            className={`p-1 min-h-20 ${
+                              isCurrentMonth ? "bg-background" : "bg-muted/30"
+                            }`}
+                          >
+                            <WorkoutDayCell
+                              day={day.getDate()}
+                              tags={tags}
+                              isToday={isTodayDate}
+                              isCurrentMonth={isCurrentMonth}
+                            />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
