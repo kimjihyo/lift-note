@@ -1,36 +1,224 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 1. 서비스 개요
 
-## Getting Started
+운동 기록을 날짜 단위로 관리하는 웹 앱이다.
+사용자는 특정 날짜에 여러 운동 종목을 추가하고, 각 종목마다 여러 세트를 기록할 수 있다.
+메인 진입점은 달력이며, 날짜 → 운동 기록 페이지로 흐른다.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 2. 핵심 목표
+
+- **날짜 중심 UX**: “언제 운동했는지”가 가장 먼저 보인다.
+- **입력 최소화**: KG / 횟수 / 세트만 빠르게 기록
+- **확장 가능 구조**: 종목, 태그, 통계 기능 추가가 쉬운 설계
+- **모바일 First UI**: 모바일 화면을 최우선으로 고려하여 화면을 디자인하고 설계한다.
+
+---
+
+## 3. 주요 기능 요약
+
+### 3.1 운동 기록
+
+- 운동 기록은 **날짜 단위**로 존재
+- 한 날짜에:
+
+  - 여러 운동 종목 가능
+  - 한 종목당 여러 세트 가능
+
+- 세트 정보
+
+  - 무게 (kg)
+  - 반복 횟수 (reps)
+
+### 3.2 운동 종목
+
+- 미리 정의된 종목 선택
+
+  - 예: 스쿼트, 벤치프레스, 데드리프트
+
+- (추후 확장 가능)
+
+  - 커스텀 종목 추가
+  - 최근 사용 종목 우선 노출
+
+### 3.3 태그
+
+- 운동 기록(날짜 단위)에 태그를 지정
+- 선택지
+
+  - 가슴 / 등 / 어깨 / 하체 / 팔
+
+- 다중 선택 가능
+- 선택 안 해도 저장 가능
+
+---
+
+## 4. 유저 플로우
+
+### 4.1 메인 (달력 페이지)
+
+- 기본 진입 화면
+- 월 단위 달력 표시
+
+#### 날짜 셀 클릭 시
+
+- **해당 날짜에 운동 기록이 없으면**
+  → `운동 기록 추가 페이지`로 이동 (빈 상태)
+- **이미 기록이 있으면**
+  → 해당 날짜의 `운동 기록 페이지`로 이동
+
+---
+
+### 4.2 운동 기록 추가 / 수정 페이지
+
+#### 진입 시 상태
+
+- 날짜는 고정 (상단에 표시)
+- 초기 상태
+
+  - 종목 없음
+  - 태그 미선택
+
+#### 구성
+
+1. 날짜 표시
+2. 태그 선택 영역
+3. 운동 종목 리스트
+4. “운동 종목 추가” 버튼
+5. 저장 버튼
+
+---
+
+### 4.3 운동 종목 추가 플로우
+
+1. “운동 종목 추가” 버튼 클릭
+2. 운동 종목 선택 (모달 or 페이지)
+3. 선택 즉시 종목 카드 생성
+
+#### 종목 카드 구성
+
+- 종목 이름
+- 세트 리스트
+- “세트 추가” 버튼
+- 종목 삭제 버튼
+
+---
+
+### 4.4 세트 추가 / 수정
+
+- 세트는 종목 내부에 종속
+- 세트 필드
+
+  - 무게 (number input)
+  - 횟수 (number input)
+
+- 세트 추가 시 기본값은 빈 값
+- 세트 삭제 가능
+
+---
+
+## 5. 화면 구성 (UI 기준)
+
+### 5.1 달력 페이지
+
+- 월 네비게이션 (이전 / 다음)
+- 날짜 셀 상태
+
+  - 운동 기록 있음 → 강조 표시
+  - 오늘 날짜 → 별도 스타일
+
+- Tailwind + shadcn Calendar 컴포넌트 활용
+
+---
+
+### 5.2 운동 기록 페이지
+
+```
+[ 2025.09.21 ]
+
+[ 태그 ]
+[ 가슴 ] [ 등 ] [ 어깨 ] [ 하체 ] [ 팔 ]
+
+[ 벤치프레스 ]
+  세트 1: 60kg / 10회
+  세트 2: 60kg / 8회
+  + 세트 추가
+
+[ 스쿼트 ]
+  세트 1: 100kg / 5회
+  + 세트 추가
+
++ 운동 종목 추가
+
+[ 저장 ]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 6. 데이터 모델 (TypeScript 기준)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```ts
+type WorkoutSet = {
+  id: string;
+  weight: number;
+  reps: number;
+};
 
-## Learn More
+type Exercise = {
+  id: string;
+  name: string;
+  sets: WorkoutSet[];
+};
 
-To learn more about Next.js, take a look at the following resources:
+type WorkoutRecord = {
+  date: string; // YYYY-MM-DD
+  tags: ("가슴" | "등" | "어깨" | "하체" | "팔")[];
+  exercises: Exercise[];
+};
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 7. 기술 스택 적용 포인트
 
-## Deploy on Vercel
+### Next.js (App Router 기준)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/` : 달력 페이지
+- `/workout/[date]` : 운동 기록 페이지
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### TailwindCSS
+
+- 날짜 셀 상태 구분
+- 카드 / 리스트 레이아웃
+
+### shadcn/ui
+
+- Button
+- Calendar
+- Dialog (종목 선택)
+- Badge (태그)
+
+### TypeScript
+
+- 데이터 모델 강제
+- props / state 안정성 확보
+
+---
+
+## 8. MVP 범위 (1차 구현)
+
+- 달력 페이지
+- 날짜 클릭 → 기록 추가/조회
+- 운동 종목 선택
+- 세트 추가/삭제
+- 태그 선택
+- 로컬 상태 or 로컬 스토리지 저장
+
+---
+
+## 9. 이후 확장 아이디어 (지금은 구현 X)
+
+- 운동 히스토리 통계 (볼륨, PR)
+- 이전 기록 불러오기
+- 종목별 기록 그래프
+- 로그인 / 클라우드 저장
