@@ -5,6 +5,7 @@ export const EXERCISE_LIST = [
   "Overhead Press",
   "Barbell Row",
   "Pull Up",
+  "Push Up",
   "Chin Up",
   "Dips",
   "Leg Press",
@@ -26,4 +27,4 @@ export const EXERCISE_LIST = [
   "Tricep Pushdown",
 ] as const;
 
-export type ExerciseName = typeof EXERCISE_LIST[number];
+export type ExerciseName = (typeof EXERCISE_LIST)[number];
