@@ -80,7 +80,7 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: #0a0a0a;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -121,7 +121,7 @@
 
   html {
     /* iOS 노치 영역 배경색 - 다크모드 (기본) */
-    background-color: #252525;
+    background-color: #0a0a0a;
   }
 
   /* 라이트모드일 때 배경색 */

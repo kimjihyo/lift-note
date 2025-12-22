@@ -44,9 +44,17 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Android/Chrome theme-color - 다크모드 */}
-        <meta name="theme-color" content="#252525" media="(prefers-color-scheme: dark)" />
+        <meta
+          name="theme-color"
+          content="#0a0a0a"
+          media="(prefers-color-scheme: dark)"
+        />
         {/* Android/Chrome theme-color - 라이트모드 */}
-        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+        <meta
+          name="theme-color"
+          content="#ffffff"
+          media="(prefers-color-scheme: light)"
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}

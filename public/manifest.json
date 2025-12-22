@@ -4,8 +4,8 @@
   "description": "Track your workouts by date—log exercises, sets, and reps in seconds.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#252525",
-  "theme_color": "#252525",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
   "icons": [
     {
       "src": "/icon-192.png",
