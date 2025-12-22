@@ -21,7 +21,8 @@ export function WorkoutDayCell({
         <span
           className={cn(
             "text-sm font-medium",
-            isToday && "bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center",
+            isToday &&
+              "bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center",
             !isToday && "text-center",
             !isCurrentMonth && "text-muted-foreground"
           )}
@@ -37,7 +38,7 @@ export function WorkoutDayCell({
               <span
                 key={tag}
                 className={cn(
-                  "inline-flex items-center justify-center rounded-sm px-1.5 py-0.5 text-[0.65rem] font-medium border w-full",
+                  "inline-flex items-center justify-center rounded-sm px-1.5 text-xs leading-tight font-medium border w-full",
                   colors.bg,
                   colors.text,
                   colors.border
