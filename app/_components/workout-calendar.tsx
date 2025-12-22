@@ -14,7 +14,7 @@ import {
   endOfWeek,
 } from "date-fns";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { getWorkoutRecords, initializeDummyData } from "@/lib/storage";
+import { getWorkoutRecords } from "@/lib/storage";
 import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
 import { WorkoutDayCell } from "./workout-day-cell";
 import { Button } from "@/components/ui/button";
@@ -61,7 +61,6 @@ export function WorkoutCalendar() {
   }, []);
 
   useEffect(() => {
-    initializeDummyData();
     setWorkoutRecords(getWorkoutRecords());
   }, []);
 
