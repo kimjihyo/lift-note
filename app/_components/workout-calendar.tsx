@@ -19,6 +19,13 @@ import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
 import { WorkoutDayCell } from "./workout-day-cell";
 import { Button } from "@/components/ui/button";
 
+// 상수
+const WEEK_HEIGHT = 96; // 각 주의 높이 (h-24 = 96px)
+const MONTH_LABEL_HEIGHT = 28; // 월 레이블 높이 (py-1.5 + text)
+const TODAY_MONTH_INDEX = 24; // 오늘 기준 달의 인덱스 (앞뒤 24개월)
+const MONTHS_BEFORE = 24; // 과거 달 개수
+const MONTHS_AFTER = 24; // 미래 달 개수
+
 // 월 데이터 타입
 type MonthData = {
   monthDate: Date;
@@ -38,7 +45,7 @@ export function WorkoutCalendar() {
     const months: MonthData[] = [];
     const today = new Date();
 
-    for (let i = -24; i <= 24; i++) {
+    for (let i = -MONTHS_BEFORE; i <= MONTHS_AFTER; i++) {
       const monthDate = addMonths(today, i);
       const monthStart = startOfMonth(monthDate);
       const monthEnd = endOfMonth(monthDate);
@@ -75,9 +82,7 @@ export function WorkoutCalendar() {
 
     // 현재 달(인덱스 24)로 스크롤
     let offset = 0;
-    const WEEK_HEIGHT = 80;
-    const MONTH_LABEL_HEIGHT = 28;
-    for (let i = 0; i < 24; i++) {
+    for (let i = 0; i < TODAY_MONTH_INDEX; i++) {
       const weeksCount = monthsData[i]?.weeks.length || 0;
       offset += MONTH_LABEL_HEIGHT + weeksCount * WEEK_HEIGHT;
     }
@@ -100,16 +105,12 @@ export function WorkoutCalendar() {
     getScrollElement: () => parentRef.current,
     estimateSize: (index) => {
       const weeksCount = monthsData[index]?.weeks.length || 0;
-      const WEEK_HEIGHT = 96;
-      const MONTH_LABEL_HEIGHT = 28; // py-1.5 (6px * 2) + text height (16px)
       return MONTH_LABEL_HEIGHT + weeksCount * WEEK_HEIGHT;
     },
     initialOffset: () => {
       // 현재 달(인덱스 24)로 스크롤
       let offset = 0;
-      const WEEK_HEIGHT = 96;
-      const MONTH_LABEL_HEIGHT = 28;
-      for (let i = 0; i < 24; i++) {
+      for (let i = 0; i < TODAY_MONTH_INDEX; i++) {
         const weeksCount = monthsData[i]?.weeks.length || 0;
         offset += MONTH_LABEL_HEIGHT + weeksCount * WEEK_HEIGHT;
       }
