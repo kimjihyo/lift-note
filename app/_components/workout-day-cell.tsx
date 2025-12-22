@@ -10,11 +10,11 @@ interface WorkoutDayCellProps {
 }
 
 const texts = {
-  chest: "CH",
-  shoulders: "SHD",
-  legs: "LG",
-  arms: "AR",
-  back: "BK",
+  chest: "Chest",
+  shoulders: "Delts",
+  legs: "Legs",
+  arms: "Arms",
+  back: "Back",
 };
 
 export function WorkoutDayCell({

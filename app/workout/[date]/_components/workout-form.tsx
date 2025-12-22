@@ -26,7 +26,7 @@ import { EXERCISE_LIST } from "@/lib/constants/exercises";
 
 const texts = {
   chest: "Chest",
-  shoulders: "Shoulders",
+  shoulders: "Delts",
   legs: "Legs",
   arms: "Arms",
   back: "Back",
@@ -189,7 +189,7 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
 
       {/* 운동 목록 섹션 */}
       <section>
-        <div className="sticky top-15 z-10 pt-4 bg-background flex items-center justify-between mb-3">
+        <div className="sticky top-15 z-10 pt-4 bg-background flex items-center justify-between">
           <h2 className="text-sm font-semibold text-muted-foreground">
             Excercises
           </h2>
@@ -252,7 +252,7 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
                   // className="border rounded-lg p-3 space-y-3"
                 >
                   {/* 운동 헤더 */}
-                  <div className="sticky top-27 bg-background pt-1 border-b">
+                  <div className="sticky top-27 bg-background pt-3 border-b">
                     <div className="bg-background flex items-center justify-between px-3 pt-3 pb-2 border border-b-0 rounded-t-lg">
                       <h3 className="font-medium">{exercise.name}</h3>
                       <Button
