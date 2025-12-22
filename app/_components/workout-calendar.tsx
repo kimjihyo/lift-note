@@ -6,7 +6,7 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths, isSameM
 import { ko } from "date-fns/locale";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { getWorkoutRecords, initializeDummyData } from "@/lib/storage";
-import type { WorkoutRecord } from "@/lib/types";
+import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
 import { WorkoutDayCell } from "./workout-day-cell";
 
 // 월 데이터 타입
@@ -54,7 +54,7 @@ export function WorkoutCalendar() {
     router.push(`/workout/${dateStr}`);
   };
 
-  const getTagsForDate = (day: Date): string[] => {
+  const getTagsForDate = (day: Date): WorkoutTag[] => {
     const dateStr = format(day, "yyyy-MM-dd");
     const record = workoutRecords.find((r) => r.date === dateStr);
     return record?.tags || [];
@@ -144,7 +144,7 @@ export function WorkoutCalendar() {
                         >
                           <WorkoutDayCell
                             day={day.getDate()}
-                            tags={tags as any}
+                            tags={tags}
                             isToday={isTodayDate}
                             isCurrentMonth={isCurrentMonth}
                           />
