@@ -24,7 +24,7 @@ export function WorkoutDayCell({
             isToday &&
               "bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center",
             !isToday && "text-center",
-            !isCurrentMonth && "text-muted-foreground"
+            !isCurrentMonth && "opacity-30"
           )}
         >
           {day}

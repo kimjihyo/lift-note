@@ -236,9 +236,7 @@ export function WorkoutCalendar() {
                           <button
                             key={day.toISOString()}
                             onClick={() => handleDateClick(day)}
-                            className={`p-1 min-h-20 ${
-                              isCurrentMonth ? "bg-background" : "bg-muted/30"
-                            }`}
+                            className="p-1 min-h-20 bg-background"
                           >
                             <WorkoutDayCell
                               day={day.getDate()}
