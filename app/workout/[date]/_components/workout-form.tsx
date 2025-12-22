@@ -364,7 +364,7 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
                       onClick={() => {
                         const w = parseFloat(weight);
                         const r = parseInt(reps, 10);
-                        if (!isNaN(w) && !isNaN(r) && w > 0 && r > 0) {
+                        if (!isNaN(w) && !isNaN(r) && w >= 0 && r > 0) {
                           addSet(exercise.id, w, r);
                           setNewSetInputs((prev) => ({
                             ...prev,
