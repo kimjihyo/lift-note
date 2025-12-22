@@ -92,7 +92,7 @@ type WorkoutRecord = {
   - 재사용되는 컴포넌트: `/components/` 디렉토리에 배치
 
 ### Git 커밋
-- 커밋 메시지에 "🤖 Generated with Claude Code" 및 "Co-Authored-By" 추가하지 않기
+- **커밋 메시지에 "🤖 Generated with Claude Code" 및 "Co-Authored-By" 문구 절대 추가하지 않기**
 - 의미 있는 단위로 커밋 생성
 - 작업 완료 시마다 커밋 후 보고
 
