@@ -112,3 +112,4 @@ type WorkoutRecord = {
 - 상세 기획은 README.md 참조
 - 모든 커맨드는 pnpm 사용
 - tsconfig.json의 path alias: `@/*` → 프로젝트 루트
+- 개발 서버 포트: **3001** (사용자는 3000 포트 사용)
