@@ -2,10 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { getWorkoutRecordByDate, saveWorkoutRecord } from "@/lib/storage";
-import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
+import type { WorkoutRecord, WorkoutTag, Exercise } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { EXERCISE_LIST } from "@/lib/constants/exercises";
 
 const texts = {
   chest: "Chest",
@@ -26,6 +37,7 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
     tags: [],
     exercises: [],
   });
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -44,6 +56,26 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
       saveWorkoutRecord(updated);
       return updated;
     });
+  };
+
+  // 운동 추가
+  const addExercise = (exerciseName: string) => {
+    setRecord((prev) => {
+      const newExercise: Exercise = {
+        id: `exercise-${Date.now()}`,
+        name: exerciseName,
+        sets: [],
+      };
+
+      const updated = {
+        ...prev,
+        exercises: [...prev.exercises, newExercise],
+      };
+      saveWorkoutRecord(updated);
+      return updated;
+    });
+
+    setIsDrawerOpen(false);
   };
 
   return (
@@ -76,10 +108,46 @@ export function WorkoutForm({ date }: WorkoutFormProps) {
           <h2 className="text-sm font-semibold text-muted-foreground">
             Excercises
           </h2>
-          <Button size="sm" variant="outline">
-            <Plus className="h-4 w-4 mr-1" />
-            Add Exercise
-          </Button>
+          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+            <DrawerTrigger
+              asChild
+              onClick={(e) => {
+                e.currentTarget.blur();
+              }}
+            >
+              <Button size="sm" variant="outline">
+                <Plus className="h-4 w-4 mr-1" />
+                Add Exercise
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Select Exercise</DrawerTitle>
+                <DrawerDescription>
+                  Choose an exercise to add to your workout
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="px-4 pb-4 max-h-[50vh] overflow-y-auto">
+                <div className="grid gap-2">
+                  {EXERCISE_LIST.map((exercise) => (
+                    <Button
+                      key={exercise}
+                      variant="outline"
+                      className="justify-start"
+                      onClick={() => addExercise(exercise)}
+                    >
+                      {exercise}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <DrawerFooter>
+                <DrawerClose asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
         </div>
 
         {!isLoading && record.exercises.length === 0 ? (
