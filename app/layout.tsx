@@ -30,9 +30,6 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "Lift Note",
   },
-  other: {
-    "mobile-web-app-capable": "yes",
-  },
 };
 
 export default function RootLayout({

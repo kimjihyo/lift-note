@@ -132,8 +132,7 @@
   }
 
   body {
-    @apply text-foreground;
-    background-color: #0a0a0a;
+    @apply bg-background text-foreground;
   }
 
   body::-webkit-scrollbar {
