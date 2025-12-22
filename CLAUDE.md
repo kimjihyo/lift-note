@@ -82,6 +82,15 @@ type WorkoutRecord = {
 
 ## 중요 규칙
 
+### 파일명 및 컴포넌트 구조
+- **모든 파일명은 kebab-case 사용** (예: `workout-calendar.tsx`, `exercise-form.tsx`)
+- **page.tsx는 항상 서버 컴포넌트로 유지**
+- 클라이언트 컴포넌트가 필요한 경우:
+  - 하위 자식 컴포넌트로 분리
+  - 재사용되지 않는 컴포넌트: 해당 페이지 디렉토리에 `_components/` 생성
+    - 예: `app/workout/[date]/_components/exercise-form.tsx`
+  - 재사용되는 컴포넌트: `/components/` 디렉토리에 배치
+
 ### Git 커밋
 - 커밋 메시지에 "🤖 Generated with Claude Code" 및 "Co-Authored-By" 추가하지 않기
 - 의미 있는 단위로 커밋 생성
@@ -91,6 +100,7 @@ type WorkoutRecord = {
 - 기존 커밋 참고:
   - `docs: README에 PRD(product requirements document) 초안 작성`
   - `feat: ...`
+  - `chore: ...` (개발 환경 설정)
   - 간결하고 명확하게
 
 ### 개발 워크플로우
