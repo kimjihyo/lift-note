@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import {
   format,
   startOfMonth,
@@ -18,6 +17,7 @@ import { getWorkoutRecords } from "@/lib/storage";
 import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
 import { WorkoutDayCell } from "./workout-day-cell";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 // 상수
 const WEEK_HEIGHT = 96; // 각 주의 높이 (h-24 = 96px)
@@ -33,7 +33,6 @@ type MonthData = {
 };
 
 export function WorkoutCalendar() {
-  const router = useRouter();
   const [workoutRecords, setWorkoutRecords] = useState<WorkoutRecord[]>([]);
   const [currentVisibleMonth, setCurrentVisibleMonth] = useState<Date>(
     new Date()
@@ -70,11 +69,6 @@ export function WorkoutCalendar() {
   useEffect(() => {
     setWorkoutRecords(getWorkoutRecords());
   }, []);
-
-  const handleDateClick = (date: Date) => {
-    const dateStr = format(date, "yyyy-MM-dd");
-    router.push(`/workout?date=${dateStr}`);
-  };
 
   const scrollToToday = () => {
     const scrollElement = parentRef.current;
@@ -240,9 +234,14 @@ export function WorkoutCalendar() {
                         }
 
                         return (
-                          <button
+                          <Link
+                            href={{
+                              pathname: "/workout",
+                              query: {
+                                date: format(day, "yyyy-MM-dd"),
+                              },
+                            }}
                             key={day.toISOString()}
-                            onClick={() => handleDateClick(day)}
                             className="p-1 h-24 bg-background"
                           >
                             <WorkoutDayCell
@@ -251,7 +250,7 @@ export function WorkoutCalendar() {
                               isToday={isTodayDate}
                               isCurrentMonth={isCurrentMonth}
                             />
-                          </button>
+                          </Link>
                         );
                       })}
                     </div>
