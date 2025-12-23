@@ -235,6 +235,7 @@ export function WorkoutCalendar() {
 
                         return (
                           <Link
+                            prefetch={false}
                             href={{
                               pathname: "/workout",
                               query: {
