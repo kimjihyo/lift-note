@@ -25,6 +25,7 @@ const MONTH_LABEL_HEIGHT = 36; // 월 레이블 높이 (py-1.5 + text)
 const TODAY_MONTH_INDEX = 24; // 오늘 기준 달의 인덱스 (앞뒤 24개월)
 const MONTHS_BEFORE = 24; // 과거 달 개수
 const MONTHS_AFTER = 24; // 미래 달 개수
+const SCROLL_POSITION_KEY = "calendar-scroll-position"; // sessionStorage 키
 
 // 월 데이터 타입
 type MonthData = {
@@ -102,7 +103,15 @@ export function WorkoutCalendar() {
       return MONTH_LABEL_HEIGHT + weeksCount * WEEK_HEIGHT;
     },
     initialOffset: () => {
-      // 현재 달(인덱스 24)로 스크롤
+      // sessionStorage에서 저장된 스크롤 위치 복원
+      if (typeof window !== "undefined") {
+        const savedPosition = sessionStorage.getItem(SCROLL_POSITION_KEY);
+        if (savedPosition) {
+          return parseInt(savedPosition, 10);
+        }
+      }
+
+      // 저장된 위치가 없으면 현재 달(인덱스 24)로 스크롤
       let offset = 0;
       for (let i = 0; i < TODAY_MONTH_INDEX; i++) {
         const weeksCount = monthsData[i]?.weeks.length || 0;
@@ -112,7 +121,7 @@ export function WorkoutCalendar() {
     },
   });
 
-  // 스크롤 이벤트로 현재 보이는 월 추적
+  // 스크롤 이벤트로 현재 보이는 월 추적 및 스크롤 위치 저장
   useEffect(() => {
     const scrollElement = parentRef.current;
     if (!scrollElement) return;
@@ -121,8 +130,11 @@ export function WorkoutCalendar() {
       const items = virtualizer.getVirtualItems();
       if (items.length === 0) return;
 
-      // 화면 상단에 가장 가까운 월 찾기
+      // 스크롤 위치 저장
       const scrollTop = scrollElement.scrollTop;
+      sessionStorage.setItem(SCROLL_POSITION_KEY, scrollTop.toString());
+
+      // 화면 상단에 가장 가까운 월 찾기
       const containerHeight = scrollElement.clientHeight;
       const viewportTop = scrollTop;
       const viewportBottom = scrollTop + containerHeight;
