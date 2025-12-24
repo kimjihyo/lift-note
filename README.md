@@ -1,167 +1,76 @@
-## 1. 서비스 개요
+# Lift Note
 
-운동 기록을 날짜 단위로 관리하는 웹 앱이다.
-사용자는 특정 날짜에 여러 운동 종목을 추가하고, 각 종목마다 여러 세트를 기록할 수 있다.
-메인 진입점은 달력이며, 날짜 → 운동 기록 페이지로 흐른다.
+A minimal, date-centric workout tracking web app built with Next.js 16 and React 19.
 
----
+## Overview
 
-## 2. 핵심 목표
+Lift Note is a mobile-first workout tracking application that helps you record and manage your training sessions. Built with modern web technologies, it provides a clean, intuitive interface focused on quick data entry and easy navigation through your workout history.
 
-- **날짜 중심 UX**: “언제 운동했는지”가 가장 먼저 보인다.
-- **입력 최소화**: KG / 횟수 / 세트만 빠르게 기록
-- **확장 가능 구조**: 종목, 태그, 통계 기능 추가가 쉬운 설계
-- **모바일 First UI**: 모바일 화면을 최우선으로 고려하여 화면을 디자인하고 설계한다.
+## Features
 
----
+### ✅ Implemented
 
-## 3. 주요 기능 요약
+- **📅 Calendar-based Navigation**: Virtual scrolling calendar showing all your workout history at a glance
+- **🏋️ Workout Recording**: Track exercises with sets, weight (kg), and reps for each training day
+- **🏷️ Muscle Group Tags**: Categorize workouts by muscle groups (Chest, Back, Shoulders, Legs, Arms)
+- **🔍 Smart Exercise Search**: Search existing exercises or quickly add custom ones
+- **💾 Local Storage**: All data persisted in browser's local storage
+- **🎨 Modern UI**: Clean, responsive interface built with Tailwind CSS v4 and shadcn/ui
+- **⚙️ Settings Page**: Manage your exercise library (coming soon)
 
-### 3.1 운동 기록
+### 🎯 Key Highlights
 
-- 운동 기록은 **날짜 단위**로 존재
-- 한 날짜에:
+- **Date-First Approach**: Calendar is the main entry point - see your workout frequency at a glance
+- **Fast Input**: Minimal clicks to record sets - just enter weight and reps
+- **Mobile Optimized**: Designed for quick logging on your phone at the gym
+- **Custom Exercises**: Not limited to predefined exercises - add your own on the fly
+- **Sticky Headers**: Exercise headers follow you as you scroll for easy reference
 
-  - 여러 운동 종목 가능
-  - 한 종목당 여러 세트 가능
+## Tech Stack
 
-- 세트 정보
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Runtime**: [React 19](https://react.dev/)
+- **Language**: [TypeScript 5](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
+  - Button, Calendar, Dialog, Drawer, Badge, Input, Toggle Group
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Date Utilities**: [date-fns](https://date-fns.org/)
+- **Virtual Scrolling**: [@tanstack/react-virtual](https://tanstack.com/virtual)
 
-  - 무게 (kg)
-  - 반복 횟수 (reps)
-
-### 3.2 운동 종목
-
-- 미리 정의된 종목 선택
-
-  - 예: 스쿼트, 벤치프레스, 데드리프트
-
-- (추후 확장 가능)
-
-  - 커스텀 종목 추가
-  - 최근 사용 종목 우선 노출
-
-### 3.3 태그
-
-- 운동 기록(날짜 단위)에 태그를 지정
-- 선택지
-
-  - 가슴 / 등 / 어깨 / 하체 / 팔
-
-- 다중 선택 가능
-- 선택 안 해도 저장 가능
-
----
-
-## 4. 유저 플로우
-
-### 4.1 메인 (달력 페이지)
-
-- 기본 진입 화면
-- 월 단위 달력 표시
-
-#### 날짜 셀 클릭 시
-
-- **해당 날짜에 운동 기록이 없으면**
-  → `운동 기록 추가 페이지`로 이동 (빈 상태)
-- **이미 기록이 있으면**
-  → 해당 날짜의 `운동 기록 페이지`로 이동
-
----
-
-### 4.2 운동 기록 추가 / 수정 페이지
-
-#### 진입 시 상태
-
-- 날짜는 고정 (상단에 표시)
-- 초기 상태
-
-  - 종목 없음
-  - 태그 미선택
-
-#### 구성
-
-1. 날짜 표시
-2. 태그 선택 영역
-3. 운동 종목 리스트
-4. “운동 종목 추가” 버튼
-5. 저장 버튼
-
----
-
-### 4.3 운동 종목 추가 플로우
-
-1. “운동 종목 추가” 버튼 클릭
-2. 운동 종목 선택 (모달 or 페이지)
-3. 선택 즉시 종목 카드 생성
-
-#### 종목 카드 구성
-
-- 종목 이름
-- 세트 리스트
-- “세트 추가” 버튼
-- 종목 삭제 버튼
-
----
-
-### 4.4 세트 추가 / 수정
-
-- 세트는 종목 내부에 종속
-- 세트 필드
-
-  - 무게 (number input)
-  - 횟수 (number input)
-
-- 세트 추가 시 기본값은 빈 값
-- 세트 삭제 가능
-
----
-
-## 5. 화면 구성 (UI 기준)
-
-### 5.1 달력 페이지
-
-- 월 네비게이션 (이전 / 다음)
-- 날짜 셀 상태
-
-  - 운동 기록 있음 → 강조 표시
-  - 오늘 날짜 → 별도 스타일
-
-- Tailwind + shadcn Calendar 컴포넌트 활용
-
----
-
-### 5.2 운동 기록 페이지
+## Project Structure
 
 ```
-[ 2025.09.21 ]
-
-[ 태그 ]
-[ 가슴 ] [ 등 ] [ 어깨 ] [ 하체 ] [ 팔 ]
-
-[ 벤치프레스 ]
-  세트 1: 60kg / 10회
-  세트 2: 60kg / 8회
-  + 세트 추가
-
-[ 스쿼트 ]
-  세트 1: 100kg / 5회
-  + 세트 추가
-
-+ 운동 종목 추가
-
-[ 저장 ]
+lift-note/
+├── app/
+│   ├── _components/          # Shared components
+│   │   ├── workout-activity-overlay.tsx
+│   │   ├── workout-calendar.tsx
+│   │   ├── workout-day-cell.tsx
+│   │   └── workout-form.tsx
+│   ├── settings/             # Settings page
+│   │   └── page.tsx
+│   ├── layout.tsx            # Root layout
+│   ├── page.tsx              # Home (calendar page)
+│   └── globals.css           # Global styles + Tailwind
+├── components/
+│   └── ui/                   # shadcn/ui components
+├── lib/
+│   ├── constants/
+│   │   └── exercises.ts      # Default exercise list
+│   ├── storage.ts            # Local storage utilities
+│   ├── types.ts              # TypeScript type definitions
+│   └── utils.ts              # Utility functions
+└── public/                   # Static assets
 ```
 
----
+## Data Model
 
-## 6. 데이터 모델 (TypeScript 기준)
-
-```ts
+```typescript
 type WorkoutSet = {
   id: string;
-  weight: number;
-  reps: number;
+  weight: number;  // kg
+  reps: number;    // repetitions
 };
 
 type Exercise = {
@@ -172,53 +81,115 @@ type Exercise = {
 
 type WorkoutRecord = {
   date: string; // YYYY-MM-DD
-  tags: ("가슴" | "등" | "어깨" | "하체" | "팔")[];
+  tags: ("chest" | "back" | "shoulders" | "legs" | "arms")[];
   exercises: Exercise[];
 };
 ```
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm (recommended package manager)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd lift-note
+
+# Install dependencies
+pnpm install
+
+# Run development server
+pnpm dev
+```
+
+Open [http://localhost:3001](http://localhost:3001) in your browser.
+
+### Available Scripts
+
+```bash
+pnpm dev          # Start development server (port 3001)
+pnpm build        # Build for production
+pnpm start        # Start production server
+pnpm lint         # Run ESLint
+```
+
+## Usage
+
+1. **Navigate the Calendar**: Scroll through months to find the date you want to log
+2. **Create a Workout**: Click on any date to open the workout form
+3. **Select Muscle Groups**: Choose which muscle groups you trained (optional)
+4. **Add Exercises**: Search for exercises or type a new one to add it
+5. **Log Sets**: Enter weight and reps for each set
+6. **Auto-Save**: Changes are automatically saved to local storage
+
+## Features in Detail
+
+### Virtual Scrolling Calendar
+
+The calendar uses virtual scrolling to efficiently render months spanning 4 years (24 months before and after current month). Scroll position is preserved in session storage.
+
+### Exercise Management
+
+- Exercises are stored in local storage
+- Comes with 27+ default exercises (Squat, Bench Press, Deadlift, etc.)
+- Add custom exercises on-the-fly during workout logging
+- Search and filter exercises as you type
+
+### Smart UI Interactions
+
+- Muscle group tags appear in header when scrolled out of view
+- Exercise headers stick to top while scrolling through sets
+- Drawer-based exercise picker with search
+- Tap-friendly buttons and inputs optimized for mobile
+
+## Local Storage Keys
+
+- `lift-memo-workouts`: Workout records
+- `lift-memo-exercises`: Exercise library
+- `calendar-scroll-position`: Calendar scroll position (session storage)
+
+## Development Notes
+
+### File Naming Convention
+
+- All files use kebab-case: `workout-calendar.tsx`, `exercise-form.tsx`
+- Server components: `page.tsx` (default)
+- Client components: Marked with `"use client"` directive
+- Component-specific client components: Placed in `_components/` subdirectory
+
+### Package Manager
+
+This project uses **pnpm**. All package installation and script execution should use pnpm.
+
+### Port Configuration
+
+- Development server runs on port **3001** (configured in package.json)
+- Port 3000 is reserved for other user applications
+
+## Future Enhancements
+
+- 📊 Workout statistics and progress tracking
+- 📈 Exercise history charts and PR tracking
+- 🔄 Import/export workout data
+- 🌙 Enhanced dark mode customization
+- ☁️ Optional cloud sync and backup
+- 🎯 Workout templates and routines
+- ⏱️ Rest timer between sets
+- 📱 Progressive Web App (PWA) support
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is open source and available under the MIT License.
+
 ---
 
-## 7. 기술 스택 적용 포인트
-
-### Next.js (App Router 기준)
-
-- `/` : 달력 페이지
-- `/workout/[date]` : 운동 기록 페이지
-
-### TailwindCSS
-
-- 날짜 셀 상태 구분
-- 카드 / 리스트 레이아웃
-
-### shadcn/ui
-
-- Button
-- Calendar
-- Dialog (종목 선택)
-- Badge (태그)
-
-### TypeScript
-
-- 데이터 모델 강제
-- props / state 안정성 확보
-
----
-
-## 8. MVP 범위 (1차 구현)
-
-- 달력 페이지
-- 날짜 클릭 → 기록 추가/조회
-- 운동 종목 선택
-- 세트 추가/삭제
-- 태그 선택
-- 로컬 상태 or 로컬 스토리지 저장
-
----
-
-## 9. 이후 확장 아이디어 (지금은 구현 X)
-
-- 운동 히스토리 통계 (볼륨, PR)
-- 이전 기록 불러오기
-- 종목별 기록 그래프
-- 로그인 / 클라우드 저장
+Built with ❤️ using Next.js and modern web technologies.
