@@ -65,8 +65,8 @@ export default function ExerciseProgressPage() {
 
   const chartConfig = {
     maxWeight: {
-      label: "Max Weight (kg)",
-      color: "hsl(var(--chart-1))",
+      label: "Max Weight",
+      color: "hsl(220, 70%, 50%)",
     },
   } satisfies ChartConfig;
 
@@ -113,6 +113,7 @@ export default function ExerciseProgressPage() {
                       tick={{ fontSize: 12 }}
                     />
                     <YAxis
+                      domain={["dataMin - 5", "dataMax + 5"]}
                       label={{
                         value: "Weight (kg)",
                         angle: -90,
@@ -132,9 +133,10 @@ export default function ExerciseProgressPage() {
                     <Line
                       type="monotone"
                       dataKey="maxWeight"
-                      stroke="var(--color-maxWeight)"
+                      stroke="hsl(220, 70%, 50%)"
                       strokeWidth={2}
-                      dot={{ r: 4 }}
+                      dot={{ r: 4, fill: "hsl(220, 70%, 50%)" }}
+                      activeDot={{ r: 6 }}
                     />
                   </LineChart>
                 </ChartContainer>
