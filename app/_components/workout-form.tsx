@@ -257,15 +257,15 @@ export function WorkoutForm({
                   Choose an exercise to add to your workout
                 </DrawerDescription>
               </DrawerHeader>
-              <div className="px-4 pb-4">
+              <div className="px-4 pb-4 h-[50vh] flex flex-col">
                 <Input
                   type="text"
                   placeholder="Search exercises..."
                   value={exerciseSearchQuery}
                   onChange={(e) => setExerciseSearchQuery(e.target.value)}
-                  className="mb-3"
+                  className="mb-3 shrink-0"
                 />
-                <div className="max-h-[40vh] overflow-y-auto">
+                <div className="flex-1 overflow-y-auto">
                   <div className="grid gap-2">
                     {filteredExercises.length > 0 ? (
                       filteredExercises.map((exercise) => (
