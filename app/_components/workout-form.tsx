@@ -82,6 +82,12 @@ export function WorkoutForm({
       setIsLoading(false);
       if (existingRecord) {
         setRecord(existingRecord);
+      } else {
+        setRecord({
+          date,
+          tags: [],
+          exercises: [],
+        });
       }
     });
   }, [date]);

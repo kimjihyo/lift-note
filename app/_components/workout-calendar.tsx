@@ -13,8 +13,8 @@ import {
   endOfWeek,
 } from "date-fns";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { getWorkoutRecords } from "@/lib/storage";
-import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
+import { useWorkoutRecords } from "@/lib/hooks/use-workout-records";
+import type { WorkoutTag } from "@/lib/types";
 import { WorkoutDayCell } from "./workout-day-cell";
 import { Button } from "@/components/ui/button";
 import { WorkoutActivityOverlay } from "./workout-activity-overlay";
@@ -40,7 +40,7 @@ function formatDate(date: Date) {
 }
 
 export function WorkoutCalendar() {
-  const [workoutRecords, setWorkoutRecords] = useState<WorkoutRecord[]>([]);
+  const workoutRecords = useWorkoutRecords();
   const [currentVisibleMonth, setCurrentVisibleMonth] = useState<Date>(
     new Date()
   );
@@ -75,10 +75,6 @@ export function WorkoutCalendar() {
     }
 
     return months;
-  }, []);
-
-  useEffect(() => {
-    setWorkoutRecords(getWorkoutRecords());
   }, []);
 
   const scrollToToday = () => {
