@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { WorkoutForm } from "./_components/workout-form";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
 import { Suspense } from "react";
 import { WorkoutHeader } from "./_components/workout-header";
 

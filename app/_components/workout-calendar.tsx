@@ -17,7 +17,8 @@ import { getWorkoutRecords } from "@/lib/storage";
 import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
 import { WorkoutDayCell } from "./workout-day-cell";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Activity } from "react";
+import { WorkoutActivityOverlay } from "./workout-activity-overlay";
 
 // 상수
 const WEEK_HEIGHT = 96; // 각 주의 높이 (h-24 = 96px)
@@ -38,6 +39,7 @@ export function WorkoutCalendar() {
   const [currentVisibleMonth, setCurrentVisibleMonth] = useState<Date>(
     new Date()
   );
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const parentRef = useRef<HTMLDivElement>(null);
 
   // 현재 달 기준으로 앞뒤 24개월 생성 (총 49개월)
@@ -180,9 +182,10 @@ export function WorkoutCalendar() {
   }, [virtualizer, monthsData, currentVisibleMonth]);
 
   return (
-    <div className="h-full flex flex-col relative">
-      {/* 고정 헤더 */}
-      <div className="shrink-0 border-b bg-background z-20">
+    <>
+      <div className="h-full flex flex-col relative">
+        {/* 고정 헤더 */}
+        <div className="shrink-0 border-b bg-background z-20">
         <div className="py-3 px-4">
           <h2 className="text-2xl font-bold">
             {format(currentVisibleMonth, "MMMM")}
@@ -246,16 +249,12 @@ export function WorkoutCalendar() {
                         }
 
                         return (
-                          <Link
-                            prefetch={false}
-                            href={{
-                              pathname: "/workout",
-                              query: {
-                                date: format(day, "yyyy-MM-dd"),
-                              },
-                            }}
+                          <button
                             key={day.toISOString()}
                             className="p-1 h-24 bg-background"
+                            onClick={() =>
+                              setSelectedDate(format(day, "yyyy-MM-dd"))
+                            }
                           >
                             <WorkoutDayCell
                               day={day.getDate()}
@@ -263,7 +262,7 @@ export function WorkoutCalendar() {
                               isToday={isTodayDate}
                               isCurrentMonth={isCurrentMonth}
                             />
-                          </Link>
+                          </button>
                         );
                       })}
                     </div>
@@ -275,14 +274,25 @@ export function WorkoutCalendar() {
         </div>
       </div>
 
-      {/* Today 플로팅 버튼 */}
-      <Button
-        onClick={scrollToToday}
-        className="fixed bottom-4 left-4 rounded-full shadow-lg z-30"
-        size="default"
-      >
-        Today
-      </Button>
-    </div>
+        {/* Today 플로팅 버튼 */}
+        <Button
+          onClick={scrollToToday}
+          className="fixed bottom-4 left-4 rounded-full shadow-lg z-30"
+          size="default"
+        >
+          Today
+        </Button>
+      </div>
+
+      {/* Activity로 오버레이 관리 */}
+      <Activity mode={selectedDate ? "visible" : "hidden"}>
+        {selectedDate && (
+          <WorkoutActivityOverlay
+            date={selectedDate}
+            onClose={() => setSelectedDate(null)}
+          />
+        )}
+      </Activity>
+    </>
   );
 }

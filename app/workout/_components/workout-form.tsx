@@ -33,9 +33,13 @@ const texts = {
   back: "Back",
 };
 
-export function WorkoutForm() {
+interface WorkoutFormProps {
+  dateOverride?: string;
+}
+
+export function WorkoutForm({ dateOverride }: WorkoutFormProps = {}) {
   const params = useSearchParams();
-  const date = params.get("date") ?? "";
+  const date = dateOverride ?? params.get("date") ?? "";
   const [isLoading, setIsLoading] = useState(true);
   const [record, setRecord] = useState<WorkoutRecord>({
     date,
