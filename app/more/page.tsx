@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, Upload, Trash2 } from "lucide-react";
+import { ArrowLeft, Download, Upload, Trash2, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { getWorkoutRecords, getExerciseList } from "@/lib/storage";
@@ -125,6 +125,22 @@ export default function SettingsPage() {
       {/* 메인 콘텐츠 */}
       <main className="flex-1 overflow-y-auto p-4">
         <section className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold mb-3">Progress</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Track your strength progress over time
+            </p>
+          </div>
+
+          <Link href="/progress">
+            <Button className="w-full justify-start" variant="outline">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Exercise Progress
+            </Button>
+          </Link>
+        </section>
+
+        <section className="space-y-4 mt-8">
           <div>
             <h2 className="text-base font-semibold mb-3">Data Management</h2>
             <p className="text-sm text-muted-foreground mb-4">
