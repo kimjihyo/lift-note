@@ -18,7 +18,7 @@ import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
 import { WorkoutDayCell } from "./workout-day-cell";
 import { Button } from "@/components/ui/button";
 import { WorkoutActivityOverlay } from "./workout-activity-overlay";
-import { Settings } from "lucide-react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 
 // 상수
@@ -198,9 +198,9 @@ export function WorkoutCalendar() {
             <h2 className="text-2xl font-bold">
               {format(currentVisibleMonth, "MMMM")}
             </h2>
-            <Link href="/settings">
+            <Link href="/more">
               <Button variant="ghost" size="icon">
-                <Settings className="h-5 w-5" />
+                <Menu className="h-5 w-5" />
               </Button>
             </Link>
           </div>

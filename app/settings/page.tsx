@@ -42,7 +42,9 @@ export default function SettingsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `lift-note-backup-${new Date().toISOString().split("T")[0]}.json`;
+    a.download = `lift-note-backup-${
+      new Date().toISOString().split("T")[0]
+    }.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -64,14 +66,24 @@ export default function SettingsPage() {
         const backupData = JSON.parse(content);
 
         // 데이터 검증
-        if (!backupData.data || !backupData.data.workouts || !backupData.data.exercises) {
+        if (
+          !backupData.data ||
+          !backupData.data.workouts ||
+          !backupData.data.exercises
+        ) {
           alert("Invalid backup file format");
           return;
         }
 
         // local storage에 복원
-        localStorage.setItem("lift-memo-workouts", JSON.stringify(backupData.data.workouts));
-        localStorage.setItem("lift-memo-exercises", JSON.stringify(backupData.data.exercises));
+        localStorage.setItem(
+          "lift-memo-workouts",
+          JSON.stringify(backupData.data.workouts)
+        );
+        localStorage.setItem(
+          "lift-memo-exercises",
+          JSON.stringify(backupData.data.exercises)
+        );
 
         alert("Data restored successfully! Please refresh the page.");
         // 페이지 새로고침
@@ -107,7 +119,7 @@ export default function SettingsPage() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
-        <h1 className="text-lg font-semibold">Settings</h1>
+        <h1 className="text-lg font-semibold">More</h1>
       </header>
 
       {/* 메인 콘텐츠 */}
