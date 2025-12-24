@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { getWorkoutRecordByDate, saveWorkoutRecord } from "@/lib/storage";
+import {
+  getWorkoutRecordByDate,
+  saveWorkoutRecord,
+  getExerciseList,
+} from "@/lib/storage";
 import type {
   WorkoutRecord,
   WorkoutTag,
@@ -22,7 +26,6 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
-import { EXERCISE_LIST } from "@/lib/constants/exercises";
 import { useSearchParams } from "next/navigation";
 
 const texts = {
@@ -55,6 +58,9 @@ export function WorkoutForm({
   });
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [exerciseSearchQuery, setExerciseSearchQuery] = useState("");
+  const [exerciseList, setExerciseList] = useState<string[]>(() =>
+    getExerciseList()
+  );
 
   // 각 운동별 새 세트 입력값 관리
   const [newSetInputs, setNewSetInputs] = useState<
@@ -65,7 +71,7 @@ export function WorkoutForm({
   const muscleGroupRef = useRef<HTMLElement>(null);
 
   // 검색어에 따라 필터링된 운동 목록
-  const filteredExercises = EXERCISE_LIST.filter((exercise) =>
+  const filteredExercises = exerciseList.filter((exercise) =>
     exercise.toLowerCase().includes(exerciseSearchQuery.toLowerCase())
   );
 
