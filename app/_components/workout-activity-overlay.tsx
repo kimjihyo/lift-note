@@ -17,9 +17,9 @@ export function WorkoutActivityOverlay({
   const formattedDate = format(new Date(date), "MMMM d, yyyy");
 
   return (
-    <div className="absolute top-0 left-0 w-full h-full overflow-y-auto z-50 bg-background">
+    <div className="absolute top-0 left-0 w-full h-full overflow-y-auto z-50 bg-background flex flex-col">
       {/* 헤더 */}
-      <header className="z-20 sticky bg-background top-0 shrink-0 px-4 h-15 border-b flex items-center gap-3">
+      <header className="bg-background shrink-0 px-4 h-15 border-b flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="h-5 w-5" />
         </Button>
@@ -29,7 +29,7 @@ export function WorkoutActivityOverlay({
       </header>
 
       {/* 메인 콘텐츠 */}
-      <main>
+      <main className="flex-1 min-h-0 overflow-y-auto">
         <WorkoutForm dateOverride={date} />
       </main>
     </div>
