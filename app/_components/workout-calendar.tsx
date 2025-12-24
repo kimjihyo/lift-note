@@ -282,7 +282,7 @@ export function WorkoutCalendar() {
         {/* Today 플로팅 버튼 */}
         <Button
           onClick={scrollToToday}
-          className="fixed bottom-4 left-4 rounded-full shadow-lg z-30"
+          className="absolute bottom-4 left-4 rounded-full shadow-lg z-30"
           size="default"
         >
           Today
