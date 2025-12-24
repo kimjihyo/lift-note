@@ -307,7 +307,7 @@ export function WorkoutForm({
                           variant="default"
                           onClick={() => addNewExercise(exerciseSearchQuery)}
                         >
-                          <Plus className="h-4 w-4 mr-2" />
+                          <Plus className="h-4 w-4" />
                           Add &quot;{exerciseSearchQuery.trim()}&quot;
                         </Button>
                       </div>
