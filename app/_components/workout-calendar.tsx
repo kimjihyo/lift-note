@@ -40,6 +40,7 @@ export function WorkoutCalendar() {
     new Date()
   );
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
 
   // 현재 달 기준으로 앞뒤 24개월 생성 (총 49개월)
@@ -186,93 +187,97 @@ export function WorkoutCalendar() {
       <div className="h-full flex flex-col relative">
         {/* 고정 헤더 */}
         <div className="shrink-0 border-b bg-background z-20">
-        <div className="py-3 px-4">
-          <h2 className="text-2xl font-bold">
-            {format(currentVisibleMonth, "MMMM")}
-          </h2>
-        </div>
-        <div className="grid grid-cols-7 border-t">
-          {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
-            <div
-              key={index}
-              className="text-center text-xs text-muted-foreground py-1"
-            >
-              {day}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 가상화된 달력 콘텐츠 */}
-      <div ref={parentRef} className="flex-1 overflow-y-auto">
-        <div
-          style={{
-            height: `${virtualizer.getTotalSize()}px`,
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          {virtualizer.getVirtualItems().map((virtualItem) => {
-            const { monthDate, weeks } = monthsData[virtualItem.index];
-
-            return (
+          <div className="py-3 px-4">
+            <h2 className="text-2xl font-bold">
+              {format(currentVisibleMonth, "MMMM")}
+            </h2>
+          </div>
+          <div className="grid grid-cols-7 border-t">
+            {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
               <div
-                key={virtualItem.key}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  transform: `translateY(${virtualItem.start}px)`,
-                }}
+                key={index}
+                className="text-center text-xs text-muted-foreground py-1"
               >
-                {/* 달 레이블 */}
-                <div className="px-4 py-1.5">
-                  <h3 className="font-semibold text-muted-foreground">
-                    {format(monthDate, "MMM")}
-                  </h3>
-                </div>
-
-                {/* 날짜 그리드 */}
-                <div>
-                  {weeks.map((week, weekIndex) => (
-                    <div key={weekIndex} className="grid grid-cols-7 border-t">
-                      {week.map((day) => {
-                        const tags = getTagsForDate(day);
-                        const isCurrentMonth = isSameMonth(day, monthDate);
-                        const isTodayDate = isToday(day);
-
-                        if (!isCurrentMonth) {
-                          return (
-                            <div key={day.getDate()} className="p-1 h-24" />
-                          );
-                        }
-
-                        return (
-                          <button
-                            key={day.toISOString()}
-                            className="p-1 h-24 bg-background"
-                            onClick={() =>
-                              setSelectedDate(format(day, "yyyy-MM-dd"))
-                            }
-                          >
-                            <WorkoutDayCell
-                              day={day.getDate()}
-                              tags={tags}
-                              isToday={isTodayDate}
-                              isCurrentMonth={isCurrentMonth}
-                            />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
+                {day}
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
+
+        {/* 가상화된 달력 콘텐츠 */}
+        <div ref={parentRef} className="flex-1 overflow-y-auto">
+          <div
+            style={{
+              height: `${virtualizer.getTotalSize()}px`,
+              width: "100%",
+              position: "relative",
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualItem) => {
+              const { monthDate, weeks } = monthsData[virtualItem.index];
+
+              return (
+                <div
+                  key={virtualItem.key}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    transform: `translateY(${virtualItem.start}px)`,
+                  }}
+                >
+                  {/* 달 레이블 */}
+                  <div className="px-4 py-1.5">
+                    <h3 className="font-semibold text-muted-foreground">
+                      {format(monthDate, "MMM")}
+                    </h3>
+                  </div>
+
+                  {/* 날짜 그리드 */}
+                  <div>
+                    {weeks.map((week, weekIndex) => (
+                      <div
+                        key={weekIndex}
+                        className="grid grid-cols-7 border-t"
+                      >
+                        {week.map((day) => {
+                          const tags = getTagsForDate(day);
+                          const isCurrentMonth = isSameMonth(day, monthDate);
+                          const isTodayDate = isToday(day);
+
+                          if (!isCurrentMonth) {
+                            return (
+                              <div key={day.getDate()} className="p-1 h-24" />
+                            );
+                          }
+
+                          return (
+                            <button
+                              key={day.toISOString()}
+                              className="p-1 h-24 bg-background"
+                              onClick={() => {
+                                setSelectedDate(format(day, "yyyy-MM-dd"));
+                                setIsOverlayOpen(true);
+                              }}
+                            >
+                              <WorkoutDayCell
+                                day={day.getDate()}
+                                tags={tags}
+                                isToday={isTodayDate}
+                                isCurrentMonth={isCurrentMonth}
+                              />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Today 플로팅 버튼 */}
         <Button
@@ -285,11 +290,11 @@ export function WorkoutCalendar() {
       </div>
 
       {/* Activity로 오버레이 관리 */}
-      <Activity mode={selectedDate ? "visible" : "hidden"}>
+      <Activity mode={isOverlayOpen ? "visible" : "hidden"}>
         {selectedDate && (
           <WorkoutActivityOverlay
             date={selectedDate}
-            onClose={() => setSelectedDate(null)}
+            onClose={() => setIsOverlayOpen(false)}
           />
         )}
       </Activity>
