@@ -5,6 +5,7 @@ import { ArrowLeft, Download, Upload, Trash2, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { getWorkoutRecords, getExerciseList } from "@/lib/storage";
+import { useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,10 +16,24 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isProgressDrawerOpen, setIsProgressDrawerOpen] = useState(false);
+  const [exerciseSearchQuery, setExerciseSearchQuery] = useState("");
+  const [exerciseList] = useState<string[]>(() => getExerciseList());
 
   const handleBackup = () => {
     // 운동 기록과 운동 목록 가져오기
@@ -110,6 +125,17 @@ export default function SettingsPage() {
     window.location.href = "/";
   };
 
+  const handleSelectExercise = (exerciseName: string) => {
+    setIsProgressDrawerOpen(false);
+    setExerciseSearchQuery("");
+    router.push(`/progress/${encodeURIComponent(exerciseName)}`);
+  };
+
+  // 검색어에 따라 필터링된 운동 목록
+  const filteredExercises = exerciseList.filter((exercise) =>
+    exercise.toLowerCase().includes(exerciseSearchQuery.toLowerCase())
+  );
+
   return (
     <div className="h-screen w-full flex flex-col bg-background">
       {/* 헤더 */}
@@ -132,12 +158,14 @@ export default function SettingsPage() {
             </p>
           </div>
 
-          <Link href="/progress">
-            <Button className="w-full justify-start" variant="outline">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Exercise Progress
-            </Button>
-          </Link>
+          <Button
+            onClick={() => setIsProgressDrawerOpen(true)}
+            className="w-full justify-start"
+            variant="outline"
+          >
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Exercise Progress
+          </Button>
         </section>
 
         <section className="space-y-4 mt-8">
@@ -223,6 +251,58 @@ export default function SettingsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* 운동 선택 Drawer */}
+      <Drawer
+        open={isProgressDrawerOpen}
+        onOpenChange={(open) => {
+          setIsProgressDrawerOpen(open);
+          if (!open) setExerciseSearchQuery("");
+        }}
+      >
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Select Exercise</DrawerTitle>
+            <DrawerDescription>
+              Choose an exercise to view progress
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4 pb-4 h-[50vh] flex flex-col">
+            <Input
+              type="text"
+              placeholder="Search exercises..."
+              value={exerciseSearchQuery}
+              onChange={(e) => setExerciseSearchQuery(e.target.value)}
+              className="mb-3 shrink-0"
+            />
+            <div className="flex-1 overflow-y-auto">
+              <div className="grid gap-2">
+                {filteredExercises.length > 0 ? (
+                  filteredExercises.map((exercise) => (
+                    <Button
+                      key={exercise}
+                      variant="outline"
+                      className="justify-start"
+                      onClick={() => handleSelectExercise(exercise)}
+                    >
+                      {exercise}
+                    </Button>
+                  ))
+                ) : (
+                  <p className="text-center text-sm text-muted-foreground py-8">
+                    No exercises found
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
