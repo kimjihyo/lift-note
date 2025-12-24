@@ -137,7 +137,7 @@ export default function SettingsPage() {
   );
 
   return (
-    <div className="h-screen w-full flex flex-col bg-background">
+    <div className="h-dvh w-full flex flex-col bg-background">
       {/* 헤더 */}
       <header className="shrink-0 px-4 h-15 border-b flex items-center gap-3">
         <Link href="/">
