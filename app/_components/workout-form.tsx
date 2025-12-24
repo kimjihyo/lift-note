@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getWorkoutRecordByDate, saveWorkoutRecord } from "@/lib/storage";
 import type {
   WorkoutRecord,
@@ -35,9 +35,10 @@ const texts = {
 
 interface WorkoutFormProps {
   dateOverride?: string;
+  onMuscleGroupVisibilityChange?: (visible: boolean, tags: WorkoutTag[]) => void;
 }
 
-export function WorkoutForm({ dateOverride }: WorkoutFormProps = {}) {
+export function WorkoutForm({ dateOverride, onMuscleGroupVisibilityChange }: WorkoutFormProps = {}) {
   const params = useSearchParams();
   const date = dateOverride ?? params.get("date") ?? "";
   const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +54,9 @@ export function WorkoutForm({ dateOverride }: WorkoutFormProps = {}) {
     Record<string, { weight: string; reps: string }>
   >({});
 
+  // muscle group 섹션 ref
+  const muscleGroupRef = useRef<HTMLElement>(null);
+
   // 초기 데이터 로드
   useEffect(() => {
     getWorkoutRecordByDate(date).then((existingRecord) => {
@@ -62,6 +66,25 @@ export function WorkoutForm({ dateOverride }: WorkoutFormProps = {}) {
       }
     });
   }, [date]);
+
+  // muscle group 섹션 가시성 감지
+  useEffect(() => {
+    if (!muscleGroupRef.current || !onMuscleGroupVisibilityChange) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        onMuscleGroupVisibilityChange(entry.isIntersecting, record.tags);
+      },
+      {
+        threshold: 0,
+        rootMargin: "-60px 0px 0px 0px", // 헤더 높이만큼 offset
+      }
+    );
+
+    observer.observe(muscleGroupRef.current);
+
+    return () => observer.disconnect();
+  }, [onMuscleGroupVisibilityChange, record.tags]);
 
   // 태그 토글
   const setTags = (tags: WorkoutTag[]) => {
@@ -169,7 +192,7 @@ export function WorkoutForm({ dateOverride }: WorkoutFormProps = {}) {
   return (
     <div className="p-4">
       {/* 태그 선택 섹션 */}
-      <section className="mb-2">
+      <section ref={muscleGroupRef} className="mb-2">
         <h2 className="text-sm font-semibold text-muted-foreground mb-3">
           Muscle Group
         </h2>

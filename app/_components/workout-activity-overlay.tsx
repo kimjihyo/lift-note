@@ -5,6 +5,8 @@ import { X } from "lucide-react";
 import { format } from "date-fns";
 import { WorkoutForm } from "./workout-form";
 import { Activity, useEffect, useRef, useState } from "react";
+import type { WorkoutTag } from "@/lib/types";
+import { Badge } from "@/components/ui/badge";
 
 interface WorkoutActivityOverlayProps {
   date: string;
@@ -12,7 +14,15 @@ interface WorkoutActivityOverlayProps {
   onClose: () => void;
 }
 
-const durationMs = 300;
+const durationMs = 320;
+
+const texts = {
+  chest: "Chest",
+  shoulders: "Delts",
+  legs: "Legs",
+  arms: "Arms",
+  back: "Back",
+};
 
 export function WorkoutActivityOverlay({
   date,
@@ -29,6 +39,10 @@ export function WorkoutActivityOverlay({
   // 애니메이션 상태(래퍼에 클래스/스타일 적용)
   const [phase, setPhase] = useState<"enter" | "idle" | "exit">("idle");
 
+  // muscle group 가시성 상태
+  const [isMuscleGroupVisible, setIsMuscleGroupVisible] = useState(true);
+  const [muscleGroupTags, setMuscleGroupTags] = useState<WorkoutTag[]>([]);
+
   const timeoutRef = useRef<number | null>(null);
 
   const rafRef = useRef<number | null>(null);
@@ -38,6 +52,14 @@ export function WorkoutActivityOverlay({
     if (timeoutRef.current != null) window.clearTimeout(timeoutRef.current);
     rafRef.current = null;
     timeoutRef.current = null;
+  };
+
+  const handleMuscleGroupVisibilityChange = (
+    visible: boolean,
+    tags: WorkoutTag[]
+  ) => {
+    setIsMuscleGroupVisible(visible);
+    setMuscleGroupTags(tags);
   };
 
   useEffect(() => {
@@ -77,8 +99,7 @@ export function WorkoutActivityOverlay({
       <div
         className="absolute top-0 left-0 w-full h-full overflow-y-auto z-50 bg-background flex flex-col"
         style={{
-          transition: `opacity ${durationMs}ms cubic-bezier(0.4, 0, 0.2, 1), transform ${durationMs}ms cubic-bezier(0.4, 0, 0.2, 1)`,
-          opacity: phase === "exit" ? 0 : 1,
+          transition: `opacity ${durationMs}ms cubic-bezier(0.4, 0, 0.2, 1), transform ${durationMs}ms cubic-bezier(0.33, 1, 0.68, 1)`,
           transform: phase === "exit" ? "translateY(100%)" : "translateY(0px)",
         }}
       >
@@ -87,14 +108,26 @@ export function WorkoutActivityOverlay({
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-5 w-5" />
           </Button>
-          <div>
+          <div className="flex items-center gap-2">
             <h1 className="text-lg font-semibold">{formattedDate}</h1>
+            {!isMuscleGroupVisible && muscleGroupTags.length > 0 && (
+              <div className="flex gap-1">
+                {muscleGroupTags.map((tag) => (
+                  <Badge key={tag} variant="secondary" className="text-xs">
+                    {texts[tag]}
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
         </header>
 
         {/* 메인 콘텐츠 */}
         <main className="flex-1 min-h-0 overflow-y-auto">
-          <WorkoutForm dateOverride={date} />
+          <WorkoutForm
+            dateOverride={date}
+            onMuscleGroupVisibilityChange={handleMuscleGroupVisibilityChange}
+          />
         </main>
       </div>
     </Activity>
