@@ -255,7 +255,7 @@ export function WorkoutCalendar() {
                           return (
                             <button
                               key={day.toISOString()}
-                              className="p-1 h-24 bg-background"
+                              className="p-1 h-24 bg-background rounded-md active:bg-white/5 active:scale-95 transition-[background-color,scale] duration-300"
                               onClick={() => {
                                 setSelectedDate(format(day, "yyyy-MM-dd"));
                                 setIsOverlayOpen(true);
