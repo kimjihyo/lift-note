@@ -17,7 +17,6 @@ import { getWorkoutRecords } from "@/lib/storage";
 import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
 import { WorkoutDayCell } from "./workout-day-cell";
 import { Button } from "@/components/ui/button";
-import { Activity } from "react";
 import { WorkoutActivityOverlay } from "./workout-activity-overlay";
 
 // 상수
@@ -34,12 +33,18 @@ type MonthData = {
   weeks: Date[][];
 };
 
+function formatDate(date: Date) {
+  return format(date, "yyyy-MM-dd");
+}
+
 export function WorkoutCalendar() {
   const [workoutRecords, setWorkoutRecords] = useState<WorkoutRecord[]>([]);
   const [currentVisibleMonth, setCurrentVisibleMonth] = useState<Date>(
     new Date()
   );
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    formatDate(new Date())
+  );
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -92,7 +97,7 @@ export function WorkoutCalendar() {
   };
 
   const getTagsForDate = (day: Date): WorkoutTag[] => {
-    const dateStr = format(day, "yyyy-MM-dd");
+    const dateStr = formatDate(day);
     const record = workoutRecords.find((r) => r.date === dateStr);
     return record?.tags || [];
   };
@@ -257,7 +262,7 @@ export function WorkoutCalendar() {
                               key={day.toISOString()}
                               className="p-1 h-24 bg-background rounded-md active:bg-white/5 active:scale-95 transition-[background-color,scale] duration-300"
                               onClick={() => {
-                                setSelectedDate(format(day, "yyyy-MM-dd"));
+                                setSelectedDate(formatDate(day));
                                 setIsOverlayOpen(true);
                               }}
                             >
@@ -290,14 +295,11 @@ export function WorkoutCalendar() {
       </div>
 
       {/* Activity로 오버레이 관리 */}
-      <Activity mode={isOverlayOpen ? "visible" : "hidden"}>
-        {selectedDate && (
-          <WorkoutActivityOverlay
-            date={selectedDate}
-            onClose={() => setIsOverlayOpen(false)}
-          />
-        )}
-      </Activity>
+      <WorkoutActivityOverlay
+        open={isOverlayOpen}
+        date={selectedDate}
+        onClose={() => setIsOverlayOpen(false)}
+      />
     </>
   );
 }
