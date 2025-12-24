@@ -5,6 +5,7 @@ import {
   getWorkoutRecordByDate,
   saveWorkoutRecord,
   getExerciseList,
+  addExerciseToList,
 } from "@/lib/storage";
 import type {
   WorkoutRecord,
@@ -132,6 +133,19 @@ export function WorkoutForm({
 
     setIsDrawerOpen(false);
     setExerciseSearchQuery("");
+  };
+
+  // 새로운 exercise를 목록에 추가하고 workout에도 추가
+  const addNewExercise = (exerciseName: string) => {
+    const trimmedName = exerciseName.trim();
+    if (!trimmedName) return;
+
+    // local storage에 추가
+    addExerciseToList(trimmedName);
+    // 목록 상태 업데이트
+    setExerciseList((prev) => [...prev, trimmedName]);
+    // workout에 추가
+    addExercise(trimmedName);
   };
 
   // 운동 삭제
@@ -284,9 +298,22 @@ export function WorkoutForm({
                           {exercise}
                         </Button>
                       ))
+                    ) : exerciseSearchQuery.trim() ? (
+                      <div className="flex flex-col items-center justify-center py-8 gap-3">
+                        <p className="text-center text-sm text-muted-foreground">
+                          No exercises found
+                        </p>
+                        <Button
+                          variant="default"
+                          onClick={() => addNewExercise(exerciseSearchQuery)}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add &quot;{exerciseSearchQuery.trim()}&quot;
+                        </Button>
+                      </div>
                     ) : (
                       <p className="text-center text-sm text-muted-foreground py-8">
-                        No exercises found
+                        Start typing to search or add new exercise
                       </p>
                     )}
                   </div>
