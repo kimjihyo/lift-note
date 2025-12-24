@@ -18,6 +18,8 @@ import type { WorkoutRecord, WorkoutTag } from "@/lib/types";
 import { WorkoutDayCell } from "./workout-day-cell";
 import { Button } from "@/components/ui/button";
 import { WorkoutActivityOverlay } from "./workout-activity-overlay";
+import { Settings } from "lucide-react";
+import Link from "next/link";
 
 // 상수
 const WEEK_HEIGHT = 96; // 각 주의 높이 (h-24 = 96px)
@@ -192,10 +194,15 @@ export function WorkoutCalendar() {
       <div className="h-full flex flex-col relative">
         {/* 고정 헤더 */}
         <div className="shrink-0 border-b bg-background z-20">
-          <div className="py-3 px-4">
+          <div className="py-3 px-4 flex items-center justify-between">
             <h2 className="text-2xl font-bold">
               {format(currentVisibleMonth, "MMMM")}
             </h2>
+            <Link href="/settings">
+              <Button variant="ghost" size="icon">
+                <Settings className="h-5 w-5" />
+              </Button>
+            </Link>
           </div>
           <div className="grid grid-cols-7 border-t">
             {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
