@@ -1,13 +1,24 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, Upload } from "lucide-react";
+import { ArrowLeft, Download, Upload, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { getWorkoutRecords, getExerciseList } from "@/lib/storage";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleBackup = () => {
     // 운동 기록과 운동 목록 가져오기
@@ -76,6 +87,17 @@ export default function SettingsPage() {
     event.target.value = "";
   };
 
+  const handleClearData = () => {
+    // local storage에서 모든 데이터 삭제
+    localStorage.removeItem("lift-memo-workouts");
+    localStorage.removeItem("lift-memo-exercises");
+
+    setIsDialogOpen(false);
+    alert("All data has been cleared successfully!");
+    // 페이지 새로고침
+    window.location.href = "/";
+  };
+
   return (
     <div className="h-screen w-full flex flex-col bg-background">
       {/* 헤더 */}
@@ -135,7 +157,44 @@ export default function SettingsPage() {
             </p>
           </div>
         </section>
+
+        <section className="space-y-4 mt-8">
+          <div>
+            <h2 className="text-base font-semibold mb-3">Danger Zone</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Permanently delete all your data
+            </p>
+          </div>
+
+          <Button
+            onClick={() => setIsDialogOpen(true)}
+            className="w-full justify-start"
+            variant="destructive"
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Clear All Data
+          </Button>
+        </section>
       </main>
+
+      {/* 확인 다이얼로그 */}
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete all
+              your workout records and exercise library from your device.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleClearData}>
+              Delete All Data
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
