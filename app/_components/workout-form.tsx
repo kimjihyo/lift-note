@@ -35,10 +35,16 @@ const texts = {
 
 interface WorkoutFormProps {
   dateOverride?: string;
-  onMuscleGroupVisibilityChange?: (visible: boolean, tags: WorkoutTag[]) => void;
+  onMuscleGroupVisibilityChange?: (
+    visible: boolean,
+    tags: WorkoutTag[]
+  ) => void;
 }
 
-export function WorkoutForm({ dateOverride, onMuscleGroupVisibilityChange }: WorkoutFormProps = {}) {
+export function WorkoutForm({
+  dateOverride,
+  onMuscleGroupVisibilityChange,
+}: WorkoutFormProps = {}) {
   const params = useSearchParams();
   const date = dateOverride ?? params.get("date") ?? "";
   const [isLoading, setIsLoading] = useState(true);
@@ -273,22 +279,22 @@ export function WorkoutForm({ dateOverride, onMuscleGroupVisibilityChange }: Wor
               const reps = newSetInputs[inputKey]?.reps || "";
 
               return (
-                <div
-                  key={exercise.id}
-                  // className="border rounded-lg p-3 space-y-3"
-                >
+                <div key={exercise.id}>
                   {/* 운동 헤더 */}
-                  <div className="sticky top-12 bg-background pt-3 border-b">
-                    <div className="bg-background flex items-center justify-between px-3 pt-3 pb-2 border border-b-0 rounded-t-lg">
-                      <h3 className="font-medium">{exercise.name}</h3>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive"
-                        onClick={() => deleteExercise(exercise.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                  <div className="sticky top-12 bg-background pt-3">
+                    <div className="bg-background flex flex-col px-3 pt-3 border border-b-0 rounded-t-lg">
+                      <div className="flex items-center justify-between pb-2">
+                        <h3 className="font-medium">{exercise.name}</h3>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive"
+                          onClick={() => deleteExercise(exercise.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <div className="w-full h-px bg-border" />
                     </div>
                   </div>
 
@@ -296,7 +302,7 @@ export function WorkoutForm({ dateOverride, onMuscleGroupVisibilityChange }: Wor
                   <div className="space-y-2 p-3 border border-t-0 border-b-0">
                     {exercise.sets.map((set, index) => (
                       <div key={set.id} className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground min-w-12">
+                        <span className="text-xs text-muted-foreground min-w-9">
                           Set {index + 1}
                         </span>
                         <Input
@@ -311,11 +317,11 @@ export function WorkoutForm({ dateOverride, onMuscleGroupVisibilityChange }: Wor
                               set.reps
                             )
                           }
-                          className="h-8 w-16 font-mono font-bold placeholder:font-normal placeholder:text-sm"
+                          className="h-8 w-18 text-end font-mono font-bold placeholder:font-normal placeholder:text-sm"
                           placeholder="kg"
                         />
                         <span className="text-sm text-muted-foreground">
-                          kg ×
+                          kg
                         </span>
                         <Input
                           type="text"
@@ -329,7 +335,7 @@ export function WorkoutForm({ dateOverride, onMuscleGroupVisibilityChange }: Wor
                               parseInt(e.target.value, 10) || 0
                             )
                           }
-                          className="h-8 w-16 font-mono font-bold placeholder:font-normal placeholder:text-sm"
+                          className="h-8 w-18 text-end font-mono font-bold placeholder:font-normal placeholder:text-sm"
                           placeholder="reps"
                         />
                         <span className="text-sm text-muted-foreground">
@@ -348,7 +354,10 @@ export function WorkoutForm({ dateOverride, onMuscleGroupVisibilityChange }: Wor
                   </div>
 
                   {/* 세트 추가 입력 */}
-                  <div className="flex items-center gap-2 px-3 pb-3 border border-t-0 rounded-b-lg">
+                  <div className="flex items-center gap-2 pt-1 px-3 pb-3 border border-t-0 rounded-b-lg">
+                    <span className="text-xs text-muted-foreground min-w-9">
+                      Set {exercise.sets.length + 1}
+                    </span>
                     <Input
                       type="text"
                       pattern="\d*"
@@ -362,10 +371,10 @@ export function WorkoutForm({ dateOverride, onMuscleGroupVisibilityChange }: Wor
                           },
                         }))
                       }
-                      className="h-8 w-16 font-mono font-bold placeholder:font-normal placeholder:text-sm"
+                      className="h-8 w-18 text-end font-mono font-bold placeholder:font-normal placeholder:text-sm"
                       placeholder="kg"
                     />
-                    <span className="text-sm text-muted-foreground">kg ×</span>
+                    <span className="text-sm text-muted-foreground">kg</span>
                     <Input
                       type="text"
                       pattern="\d*"
@@ -379,14 +388,14 @@ export function WorkoutForm({ dateOverride, onMuscleGroupVisibilityChange }: Wor
                           },
                         }))
                       }
-                      className="h-8 w-16 font-mono font-bold placeholder:font-normal placeholder:text-sm"
+                      className="h-8 w-18 text-end font-mono font-bold placeholder:font-normal placeholder:text-sm"
                       placeholder="reps"
                     />
                     <span className="text-sm text-muted-foreground">reps</span>
                     <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 ml-auto"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 ml-auto"
                       onClick={() => {
                         const w = parseFloat(weight);
                         const r = parseInt(reps, 10);
@@ -400,7 +409,6 @@ export function WorkoutForm({ dateOverride, onMuscleGroupVisibilityChange }: Wor
                       }}
                     >
                       <Plus className="h-3 w-3" />
-                      Add Set
                     </Button>
                   </div>
                 </div>

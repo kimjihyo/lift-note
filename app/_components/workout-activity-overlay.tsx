@@ -29,7 +29,7 @@ export function WorkoutActivityOverlay({
   open,
   onClose,
 }: WorkoutActivityOverlayProps) {
-  const formattedDate = format(new Date(date), "MMMM d, yyyy");
+  const formattedDate = format(new Date(date), "MMM d, yyyy");
 
   // Activity mode는 "실제 표시/숨김"
   const [mode, setMode] = useState<"visible" | "hidden">(
