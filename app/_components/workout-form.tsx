@@ -54,6 +54,7 @@ export function WorkoutForm({
     exercises: [],
   });
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [exerciseSearchQuery, setExerciseSearchQuery] = useState("");
 
   // 각 운동별 새 세트 입력값 관리
   const [newSetInputs, setNewSetInputs] = useState<
@@ -62,6 +63,11 @@ export function WorkoutForm({
 
   // muscle group 섹션 ref
   const muscleGroupRef = useRef<HTMLElement>(null);
+
+  // 검색어에 따라 필터링된 운동 목록
+  const filteredExercises = EXERCISE_LIST.filter((exercise) =>
+    exercise.toLowerCase().includes(exerciseSearchQuery.toLowerCase())
+  );
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -119,6 +125,7 @@ export function WorkoutForm({
     });
 
     setIsDrawerOpen(false);
+    setExerciseSearchQuery("");
   };
 
   // 운동 삭제
@@ -225,7 +232,13 @@ export function WorkoutForm({
           <h2 className="text-sm font-semibold text-muted-foreground">
             Excercises
           </h2>
-          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+          <Drawer
+            open={isDrawerOpen}
+            onOpenChange={(open) => {
+              setIsDrawerOpen(open);
+              if (!open) setExerciseSearchQuery("");
+            }}
+          >
             <DrawerTrigger
               asChild
               onClick={(e) => {
@@ -244,18 +257,33 @@ export function WorkoutForm({
                   Choose an exercise to add to your workout
                 </DrawerDescription>
               </DrawerHeader>
-              <div className="px-4 pb-4 max-h-[50vh] overflow-y-auto">
-                <div className="grid gap-2">
-                  {EXERCISE_LIST.map((exercise) => (
-                    <Button
-                      key={exercise}
-                      variant="outline"
-                      className="justify-start"
-                      onClick={() => addExercise(exercise)}
-                    >
-                      {exercise}
-                    </Button>
-                  ))}
+              <div className="px-4 pb-4">
+                <Input
+                  type="text"
+                  placeholder="Search exercises..."
+                  value={exerciseSearchQuery}
+                  onChange={(e) => setExerciseSearchQuery(e.target.value)}
+                  className="mb-3"
+                />
+                <div className="max-h-[40vh] overflow-y-auto">
+                  <div className="grid gap-2">
+                    {filteredExercises.length > 0 ? (
+                      filteredExercises.map((exercise) => (
+                        <Button
+                          key={exercise}
+                          variant="outline"
+                          className="justify-start"
+                          onClick={() => addExercise(exercise)}
+                        >
+                          {exercise}
+                        </Button>
+                      ))
+                    ) : (
+                      <p className="text-center text-sm text-muted-foreground py-8">
+                        No exercises found
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
               <DrawerFooter>
